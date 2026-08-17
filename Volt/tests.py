@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from .models import Cart, CartItem, Category, Order, Product
@@ -108,3 +109,77 @@ class CreateOrderApiTests(TestCase):
         response = self.client.post(self.url, data={}, content_type='application/json')
 
         self.assertEqual(response.status_code, 409)
+
+
+class ProductDomainTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name='Accesorios')
+        self.product = Product.objects.create(
+            name='Gorra',
+            description='Gorra de algodón',
+            price=Decimal('25000.00'),
+            stock=5,
+            category=self.category,
+        )
+
+    def test_has_stock(self):
+        self.assertTrue(self.product.has_stock(5))
+        self.assertFalse(self.product.has_stock(6))
+
+    def test_reduce_stock_discounts_quantity(self):
+        self.product.reduce_stock(3)
+
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.stock, 2)
+
+    def test_reduce_stock_rejects_insufficient_stock(self):
+        with self.assertRaises(ValidationError):
+            self.product.reduce_stock(6)
+
+    def test_reduce_stock_rejects_non_positive_quantity(self):
+        with self.assertRaises(ValidationError):
+            self.product.reduce_stock(0)
+
+
+class CatalogApiTests(TestCase):
+    def setUp(self):
+        self.category = Category.objects.create(name='Calzado')
+        self.product = Product.objects.create(
+            name='Tenis',
+            description='Tenis urbanos',
+            price=Decimal('120000.00'),
+            stock=8,
+            category=self.category,
+        )
+
+    def test_list_categories(self):
+        response = self.client.get('/api/categories/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], 'Calzado')
+
+    def test_list_products(self):
+        response = self.client.get('/api/products/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]['name'], 'Tenis')
+
+    def test_list_products_filtered_by_category(self):
+        other_category = Category.objects.create(name='Ropa Deportiva')
+        response = self.client.get(f'/api/products/?category={other_category.id}')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_product_detail_returns_200(self):
+        response = self.client.get(f'/api/products/{self.product.id}/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['name'], 'Tenis')
+
+    def test_product_detail_returns_404_when_missing(self):
+        response = self.client.get('/api/products/9999/')
+
+        self.assertEqual(response.status_code, 404)
