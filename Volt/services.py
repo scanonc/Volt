@@ -63,8 +63,7 @@ class OrderService:
 
             for product_id, requested_quantity in requested_by_product.items():
                 product = products_by_id[product_id]
-                product.stock -= requested_quantity
-                product.save(update_fields=['stock'])
+                product.reduce_stock(requested_quantity)
 
             cart.items.all().delete()
 
