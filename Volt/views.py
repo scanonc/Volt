@@ -2,7 +2,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import CreateOrderInputSerializer, OrderSerializer
+from .models import Category, Product
+from .serializers import (
+    CategorySerializer,
+    CreateOrderInputSerializer,
+    OrderSerializer,
+    ProductSerializer,
+)
 from .services import (
     CartNotFoundError,
     EmptyCartError,
@@ -41,3 +47,34 @@ class CreateOrderView(APIView):
             'message': 'Order created successfully.',
             'order': output_serializer.data,
         }, status=status.HTTP_201_CREATED)
+
+
+class CategoryListView(APIView):
+    """Lectura pura del catálogo: no hay lógica de negocio que orquestar."""
+
+    def get(self, request, *args, **kwargs):
+        categories = Category.objects.all()
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductListView(APIView):
+    def get(self, request, *args, **kwargs):
+        products = Product.objects.select_related('category').all()
+
+        category_id = request.query_params.get('category')
+        if category_id is not None:
+            products = products.filter(category_id=category_id)
+
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductDetailView(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        product = Product.objects.select_related('category').filter(pk=pk).first()
+        if product is None:
+            return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
