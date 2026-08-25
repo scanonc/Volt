@@ -11,6 +11,7 @@ env/
 # Django
 *.log
 media/
+db.sqlite3
 
 # Tooling caches
 .pytest_cache/

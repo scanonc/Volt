@@ -2,7 +2,7 @@ from django.db import transaction
 
 from .domain.builders import OrderBuilder
 from .infra.factory import NotificationFactory
-from .models import Cart, Product
+from .models import Address, Cart, Product
 
 
 class OrderServiceError(Exception):
@@ -21,8 +21,16 @@ class InsufficientStockError(OrderServiceError):
     pass
 
 
+class AddressNotFoundError(OrderServiceError):
+    pass
+
+
+class InvalidAddressError(OrderServiceError):
+    pass
+
+
 class OrderService:
-    def create_order(self, user):
+    def create_order(self, user, shipping_address_id=None, shipping_address=None):
         with transaction.atomic():
             cart = Cart.objects.select_for_update().filter(user=user).first()
             if cart is None:
@@ -31,6 +39,20 @@ class OrderService:
             cart_items = list(cart.items.select_related('product').select_for_update())
             if not cart_items:
                 raise EmptyCartError('Cart is empty.')
+
+            resolved_address = None
+            if shipping_address is not None:
+                if shipping_address.user_id != user.id:
+                    raise InvalidAddressError('Shipping address does not belong to the user.')
+                resolved_address = shipping_address
+            elif shipping_address_id is not None:
+                resolved_address = Address.objects.filter(id=shipping_address_id).first()
+                if resolved_address is None:
+                    raise AddressNotFoundError(f'Address with id {shipping_address_id} not found.')
+                if resolved_address.user_id != user.id:
+                    raise InvalidAddressError('Shipping address does not belong to the user.')
+            else:
+                resolved_address = Address.objects.filter(user=user, is_default=True).first()
 
             requested_by_product = {}
             for cart_item in cart_items:
@@ -53,6 +75,7 @@ class OrderService:
                 OrderBuilder()
                 .for_user(user)
                 .with_items(cart_items)
+                .with_shipping_address(resolved_address)
                 .build()
             )
             order.save()

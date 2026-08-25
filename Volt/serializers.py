@@ -5,6 +5,8 @@ from .models import Address, Category, Order, OrderItem, Product
 
 class CreateOrderInputSerializer(serializers.Serializer):
     """Serializer de entrada para mantener un contrato explicito del endpoint."""
+    shipping_address_id = serializers.IntegerField(required=False, allow_null=True)
+    shipping_address = serializers.IntegerField(required=False, allow_null=True)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -38,8 +40,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    shipping_address = AddressSerializer(read_only=True)
     items = OrderItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
-        fields = ('id', 'status', 'total', 'created_at', 'items')
+        fields = ('id', 'status', 'total', 'created_at', 'shipping_address', 'items')

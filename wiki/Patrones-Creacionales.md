@@ -16,13 +16,14 @@ order, order_items = (
     OrderBuilder()
     .for_user(user)
     .with_items(cart_items)
+    .with_shipping_address(shipping_address)
     .build()
 )
 ```
 
 `build()` valida que exista un usuario y al menos un ítem antes de construir,
-manteniendo la invariante de que no puede existir un `Order` sin dueño ni sin
-productos.
+así como la pertenencia de la dirección de envío al usuario del pedido,
+manteniendo las invariantes del dominio.
 
 ## Factory — `NotificationFactory` (`Volt/infra/factory.py`)
 

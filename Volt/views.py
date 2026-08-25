@@ -2,17 +2,20 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Category, Product
+from .models import Address, Category, Product
 from .serializers import (
+    AddressSerializer,
     CategorySerializer,
     CreateOrderInputSerializer,
     OrderSerializer,
     ProductSerializer,
 )
 from .services import (
+    AddressNotFoundError,
     CartNotFoundError,
     EmptyCartError,
     InsufficientStockError,
+    InvalidAddressError,
     OrderService,
 )
 
@@ -32,14 +35,23 @@ class CreateOrderView(APIView):
         if not input_serializer.is_valid():
             return Response({'errors': input_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+        shipping_address_id = (
+            input_serializer.validated_data.get('shipping_address_id')
+            or input_serializer.validated_data.get('shipping_address')
+        )
+
         try:
-            order = OrderService().create_order(request.user)
+            order = OrderService().create_order(request.user, shipping_address_id=shipping_address_id)
         except CartNotFoundError as exc:
             return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
         except EmptyCartError as exc:
             return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
         except InsufficientStockError as exc:
             return Response({'error': str(exc)}, status=status.HTTP_409_CONFLICT)
+        except AddressNotFoundError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except InvalidAddressError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
         output_serializer = OrderSerializer(order)
 
@@ -47,6 +59,40 @@ class CreateOrderView(APIView):
             'message': 'Order created successfully.',
             'order': output_serializer.data,
         }, status=status.HTTP_201_CREATED)
+
+
+class AddressListView(APIView):
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        addresses = Address.objects.filter(user=request.user)
+        serializer = AddressSerializer(addresses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = AddressSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        address = serializer.save(user=request.user)
+        return Response(AddressSerializer(address).data, status=status.HTTP_201_CREATED)
+
+
+class AddressDetailView(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        address = Address.objects.filter(pk=pk, user=request.user).first()
+        if address is None:
+            return Response({'error': 'Address not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AddressSerializer(address)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CategoryListView(APIView):

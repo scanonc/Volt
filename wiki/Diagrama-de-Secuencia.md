@@ -27,7 +27,7 @@ sequenceDiagram
         Serializer-->>View: errores
         View-->>Cliente: 400 Bad Request
     end
-    View->>Service: create_order(user)
+    View->>Service: create_order(user, shipping_address_id)
     activate Service
     Service->>DB: BEGIN (transaction.atomic)
     Service->>DB: SELECT ... FOR UPDATE (Cart del usuario)
@@ -41,13 +41,18 @@ sequenceDiagram
         Service-->>View: EmptyCartError
         View-->>Cliente: 400 Bad Request
     end
+    Service->>DB: resolver / validar Address (pertenencia al usuario)
+    alt dirección inválida o de otro usuario
+        Service-->>View: InvalidAddressError / AddressNotFoundError
+        View-->>Cliente: 400 Bad Request / 404 Not Found
+    end
     Service->>DB: SELECT productos FOR UPDATE
     Service->>Service: validar stock por producto
     alt stock insuficiente
         Service-->>View: InsufficientStockError
         View-->>Cliente: 409 Conflict
     end
-    Service->>Builder: for_user(user).with_items(items).build()
+    Service->>Builder: for_user(user).with_items(items).with_shipping_address(address).build()
     Builder-->>Service: (order, order_items)
     Service->>DB: guardar Order y OrderItems
     Service->>Product: reduce_stock(cantidad) por cada producto
