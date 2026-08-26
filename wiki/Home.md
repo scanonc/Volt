@@ -17,8 +17,11 @@ Arquitectura de Software 2026 (Núcleo de Negocio y Exposición de API Profesion
   a nivel de modelo (`Product.has_stock`, `Product.reduce_stock`).
 - **Service Layer:** `OrderService` orquesta la creación de pedidos a partir
   del carrito, validando existencia de carrito, carrito vacío e inventario.
-- **Capa de presentación (DRF):** `APIView` + `Serializers` para pedidos y
-  catálogo (`/api/orders/`, `/api/categories/`, `/api/products/`).
+  `CartService` orquesta agregar/quitar productos del carrito, validando
+  existencia del producto y disponibilidad de stock.
+- **Capa de presentación (DRF):** `APIView` + `Serializers` para pedidos,
+  carrito y catálogo (`/api/orders/`, `/api/cart/`, `/api/cart/items/`,
+  `/api/categories/`, `/api/products/`).
 - **Patrones creacionales:** `OrderBuilder` (Builder) y `NotificationFactory`
   (Factory).
 - **Pendiente (ver PlanDeTrabajo.md):** reseñas, favoritos y las entidades del

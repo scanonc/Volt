@@ -2,17 +2,22 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from .domain.builders import OrderBuilder
+from .infra.factory import NotificationFactory
+from .infra.notifications import ConsoleNotification, EmailNotification
 from .models import Address, Cart, CartItem, Category, Order, Product
 from .services import (
     AddressNotFoundError,
+    CartItemNotFoundError,
     CartNotFoundError,
+    CartService,
     EmptyCartError,
     InsufficientStockError,
     InvalidAddressError,
     OrderService,
+    ProductNotFoundError,
 )
 
 
@@ -398,6 +403,160 @@ class AddressApiTests(TestCase):
         response = self.client.get(f'{self.list_url}99999/')
 
         self.assertEqual(response.status_code, 404)
+
+
+class CartServiceTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='cart-user', password='12345')
+        self.category = Category.objects.create(name='Cart Category')
+        self.product = Product.objects.create(
+            name='Cart Product',
+            price=Decimal('10.00'),
+            stock=5,
+            category=self.category,
+        )
+
+    def test_add_item_creates_cart_and_item(self):
+        item = CartService().add_item(self.user, product_id=self.product.id, quantity=2)
+
+        self.assertEqual(item.quantity, 2)
+        self.assertEqual(Cart.objects.get(user=self.user).items.count(), 1)
+
+    def test_add_item_increments_existing_quantity(self):
+        CartService().add_item(self.user, product_id=self.product.id, quantity=2)
+        item = CartService().add_item(self.user, product_id=self.product.id, quantity=1)
+
+        self.assertEqual(item.quantity, 3)
+        self.assertEqual(CartItem.objects.filter(cart__user=self.user).count(), 1)
+
+    def test_add_item_rejects_unknown_product(self):
+        with self.assertRaises(ProductNotFoundError):
+            CartService().add_item(self.user, product_id=99999, quantity=1)
+
+    def test_add_item_rejects_insufficient_stock(self):
+        with self.assertRaises(InsufficientStockError):
+            CartService().add_item(self.user, product_id=self.product.id, quantity=10)
+
+    def test_remove_item_deletes_it(self):
+        item = CartService().add_item(self.user, product_id=self.product.id, quantity=1)
+
+        CartService().remove_item(self.user, item.id)
+
+        self.assertFalse(CartItem.objects.filter(id=item.id).exists())
+
+    def test_remove_item_rejects_missing_item(self):
+        with self.assertRaises(CartItemNotFoundError):
+            CartService().remove_item(self.user, 99999)
+
+    def test_remove_item_rejects_item_of_another_user(self):
+        other_user = get_user_model().objects.create_user(username='cart-other', password='12345')
+        item = CartService().add_item(self.user, product_id=self.product.id, quantity=1)
+
+        with self.assertRaises(CartItemNotFoundError):
+            CartService().remove_item(other_user, item.id)
+
+
+class CartApiTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(username='cart-api-user', password='12345')
+        self.category = Category.objects.create(name='Cart API Category')
+        self.product = Product.objects.create(
+            name='Camiseta',
+            price=Decimal('30000.00'),
+            stock=5,
+            category=self.category,
+        )
+        self.cart_url = '/api/cart/'
+        self.cart_items_url = '/api/cart/items/'
+
+    def test_get_cart_requires_auth(self):
+        response = self.client.get(self.cart_url)
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_cart_creates_empty_cart_for_new_user(self):
+        self.client.force_login(self.user)
+        response = self.client.get(self.cart_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['items'], [])
+        self.assertEqual(response.json()['total'], '0.00')
+
+    def test_add_item_requires_auth(self):
+        response = self.client.post(
+            self.cart_items_url,
+            data={'product_id': self.product.id, 'quantity': 1},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_add_item_returns_201_with_cart(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            self.cart_items_url,
+            data={'product_id': self.product.id, 'quantity': 2},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 201)
+        data = response.json()
+        self.assertEqual(len(data['items']), 1)
+        self.assertEqual(data['items'][0]['quantity'], 2)
+        self.assertEqual(data['total'], '60000.00')
+
+    def test_add_item_returns_400_for_invalid_payload(self):
+        self.client.force_login(self.user)
+        response = self.client.post(self.cart_items_url, data={}, content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_item_returns_404_for_unknown_product(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            self.cart_items_url,
+            data={'product_id': 99999, 'quantity': 1},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_item_returns_409_when_stock_is_insufficient(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            self.cart_items_url,
+            data={'product_id': self.product.id, 'quantity': 10},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 409)
+
+    def test_remove_item_requires_auth(self):
+        response = self.client.delete(f'{self.cart_items_url}1/')
+        self.assertEqual(response.status_code, 401)
+
+    def test_remove_item_returns_204(self):
+        self.client.force_login(self.user)
+        item = CartService().add_item(self.user, product_id=self.product.id, quantity=1)
+
+        response = self.client.delete(f'{self.cart_items_url}{item.id}/')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(CartItem.objects.filter(id=item.id).exists())
+
+    def test_remove_item_returns_404_when_missing(self):
+        self.client.force_login(self.user)
+        response = self.client.delete(f'{self.cart_items_url}99999/')
+
+        self.assertEqual(response.status_code, 404)
+
+
+class NotificationFactoryTests(TestCase):
+    @override_settings(DEBUG=True)
+    def test_create_returns_console_notification_in_debug(self):
+        self.assertIsInstance(NotificationFactory.create(), ConsoleNotification)
+
+    @override_settings(DEBUG=False)
+    def test_create_returns_email_notification_outside_debug(self):
+        self.assertIsInstance(NotificationFactory.create(), EmailNotification)
 
 
 class ProductDomainTests(TestCase):

@@ -36,8 +36,7 @@ Desarrollar una plataforma de comercio electrónico para la gestión de producto
 
 - Gestión de categorías.
 - Gestión de productos.
-- Gestión de carritos.
-- Gestión de elementos del carrito.
+- Gestión de carritos y sus elementos vía API (`/api/cart/`).
 - Gestión de direcciones.
 - Creación de pedidos.
 - Validación de disponibilidad de productos.
@@ -71,6 +70,76 @@ Desarrollar una plataforma de comercio electrónico para la gestión de producto
 - Embeddings
 - Búsqueda semántica
 - Ranking de productos
+
+## Instalación y ejecución
+
+Requisitos: Python 3.12 o superior (Django 6.0.8 no funciona con versiones
+anteriores).
+
+```bash
+# 1. Clonar el repositorio y entrar a la carpeta
+git clone <url-del-repo>
+cd Volt
+
+# 2. Crear y activar un entorno virtual
+python -m venv venv
+source venv/bin/activate        # En Windows: venv\Scripts\activate
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+
+# 4. Aplicar migraciones
+python manage.py migrate
+
+# 5. Crear un superusuario (para entrar a /admin/ y cargar datos de prueba)
+python manage.py createsuperuser
+
+# 6. Levantar el servidor de desarrollo
+python manage.py runserver
+```
+
+La API queda disponible en `http://localhost:8000/api/` y el panel de
+administración en `http://localhost:8000/admin/`.
+
+### Correr las pruebas automatizadas
+
+```bash
+python manage.py test Volt
+```
+
+### Variables de entorno (opcional)
+
+Por defecto el proyecto corre con una `SECRET_KEY` de desarrollo y
+`DEBUG=True`. Para otro entorno, exportar:
+
+```bash
+export DJANGO_SECRET_KEY="una-clave-secreta-real"
+export DJANGO_DEBUG=False
+export DJANGO_ALLOWED_HOSTS="midominio.com"
+```
+
+### Endpoints principales
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| GET | `/api/categories/` | Listar categorías |
+| GET | `/api/products/` | Listar productos (filtro `?category=<id>`) |
+| GET | `/api/products/<id>/` | Detalle de producto |
+| GET | `/api/cart/` | Ver el carrito del usuario autenticado |
+| POST | `/api/cart/items/` | Agregar un producto al carrito (`product_id`, `quantity`) |
+| DELETE | `/api/cart/items/<id>/` | Quitar un producto del carrito |
+| GET/POST | `/api/addresses/` | Listar/crear direcciones del usuario |
+| GET | `/api/addresses/<id>/` | Detalle de una dirección |
+| GET/POST | `/api/orders/` | Crear un pedido a partir del carrito |
+
+Los endpoints que requieren usuario autenticado aceptan sesión de Django
+(`/admin/` login) o HTTP Basic Auth, por ejemplo:
+
+```bash
+curl -u usuario:contraseña -X POST http://localhost:8000/api/cart/items/ \
+  -H "Content-Type: application/json" \
+  -d '{"product_id": 1, "quantity": 2}'
+```
 
 ## Estructura del proyecto
 
@@ -124,7 +193,9 @@ Volt-main/
 │   ├── Home.md
 │   └── Patrones-Creacionales.md
 │
+├── scripts/
+│   └── prueba_pedido.py
+│
 ├── db.sqlite3
 ├── manage.py
-├── prueba_pedido.py
 └── requirements.txt

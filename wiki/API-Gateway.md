@@ -9,6 +9,11 @@ La API expone actualmente los siguientes recursos bajo el prefijo `/api/`
 - `GET /api/categories/`
 - `GET /api/products/`
 - `GET /api/products/<id>/`
+- `GET /api/cart/`
+- `POST /api/cart/items/`
+- `DELETE /api/cart/items/<id>/`
+- `GET/POST /api/addresses/`
+- `GET /api/addresses/<id>/`
 
 Todos los endpoints están implementados como `APIView` de Django REST
 Framework, devuelven JSON y usan códigos de estado HTTP estándar
