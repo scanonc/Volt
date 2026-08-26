@@ -1,6 +1,10 @@
-# prueba_pedido.py
+# scripts/prueba_pedido.py
+# Ejecutar desde la raíz del repo: python scripts/prueba_pedido.py
 import os
+import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 import django

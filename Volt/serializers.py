@@ -1,6 +1,8 @@
+from decimal import Decimal
+
 from rest_framework import serializers
 
-from .models import Address, Category, Order, OrderItem, Product
+from .models import Address, Cart, CartItem, Category, Order, OrderItem, Product
 
 
 class CreateOrderInputSerializer(serializers.Serializer):
@@ -28,6 +30,30 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ('id', 'street', 'city', 'state', 'zip_code', 'country', 'is_default')
         read_only_fields = ('id',)
+
+
+class AddCartItemInputSerializer(serializers.Serializer):
+    """Serializer de entrada: mantiene el contrato explícito de agregar al carrito."""
+    product_id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1, default=1)
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+    subtotal = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = CartItem
+        fields = ('id', 'product', 'quantity', 'subtotal')
+
+
+class CartSerializer(serializers.ModelSerializer):
+    items = CartItemSerializer(many=True, read_only=True)
+    total = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = ('id', 'items', 'total')
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

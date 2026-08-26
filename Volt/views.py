@@ -4,7 +4,9 @@ from rest_framework.views import APIView
 
 from .models import Address, Category, Product
 from .serializers import (
+    AddCartItemInputSerializer,
     AddressSerializer,
+    CartSerializer,
     CategorySerializer,
     CreateOrderInputSerializer,
     OrderSerializer,
@@ -12,11 +14,14 @@ from .serializers import (
 )
 from .services import (
     AddressNotFoundError,
+    CartItemNotFoundError,
     CartNotFoundError,
+    CartService,
     EmptyCartError,
     InsufficientStockError,
     InvalidAddressError,
     OrderService,
+    ProductNotFoundError,
 )
 
 
@@ -93,6 +98,53 @@ class AddressDetailView(APIView):
 
         serializer = AddressSerializer(address)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CartView(APIView):
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        cart = CartService().get_cart(request.user)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CartItemListView(APIView):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        input_serializer = AddCartItemInputSerializer(data=request.data)
+        if not input_serializer.is_valid():
+            return Response({'errors': input_serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            CartService().add_item(
+                request.user,
+                product_id=input_serializer.validated_data['product_id'],
+                quantity=input_serializer.validated_data['quantity'],
+            )
+        except ProductNotFoundError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except InsufficientStockError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_409_CONFLICT)
+
+        cart = CartService().get_cart(request.user)
+        return Response(CartSerializer(cart).data, status=status.HTTP_201_CREATED)
+
+
+class CartItemDetailView(APIView):
+    def delete(self, request, pk, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            CartService().remove_item(request.user, pk)
+        except CartItemNotFoundError as exc:
+            return Response({'error': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CategoryListView(APIView):

@@ -2,7 +2,7 @@ from django.db import transaction
 
 from .domain.builders import OrderBuilder
 from .infra.factory import NotificationFactory
-from .models import Address, Cart, Product
+from .models import Address, Cart, CartItem, Product
 
 
 class OrderServiceError(Exception):
@@ -26,6 +26,18 @@ class AddressNotFoundError(OrderServiceError):
 
 
 class InvalidAddressError(OrderServiceError):
+    pass
+
+
+class CartServiceError(Exception):
+    pass
+
+
+class ProductNotFoundError(CartServiceError):
+    pass
+
+
+class CartItemNotFoundError(CartServiceError):
     pass
 
 
@@ -93,3 +105,39 @@ class OrderService:
         notifier = NotificationFactory.create()
         notifier.send_confirmation(order)
         return order
+
+
+class CartService:
+    def get_cart(self, user):
+        cart, _ = Cart.objects.get_or_create(user=user)
+        return cart
+
+    def add_item(self, user, product_id, quantity):
+        with transaction.atomic():
+            product = Product.objects.select_for_update().filter(id=product_id).first()
+            if product is None:
+                raise ProductNotFoundError(f'Product with id {product_id} not found.')
+
+            cart, _ = Cart.objects.get_or_create(user=user)
+            item = cart.items.select_for_update().filter(product=product).first()
+            new_quantity = quantity + (item.quantity if item else 0)
+
+            if not product.has_stock(new_quantity):
+                raise InsufficientStockError(
+                    f'Insufficient stock for product "{product.name}". '
+                    f'Requested: {new_quantity}, available: {product.stock}.'
+                )
+
+            if item is None:
+                item = CartItem.objects.create(cart=cart, product=product, quantity=quantity)
+            else:
+                item.quantity = new_quantity
+                item.save(update_fields=['quantity'])
+
+        return item
+
+    def remove_item(self, user, item_id):
+        item = CartItem.objects.filter(id=item_id, cart__user=user).first()
+        if item is None:
+            raise CartItemNotFoundError(f'Cart item with id {item_id} not found.')
+        item.delete()
