@@ -1,0 +1,37 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Volt / Notificaciones</title>
+  <link rel="stylesheet" href="{% static 'volt/dashboard.css' %}">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar"><a class="brand" href="/">V<span>OLT</span></a><div class="service-tag"><span class="pulse"></span> notification service <strong>v2</strong></div></header>
+    <section class="intro"><p class="eyebrow">CENTRO DE OPERACIONES</p><h1>Notificaciones que<br><em>llegan a tiempo.</em></h1><p class="lede">Prueba el flujo de confirmación de pedidos y observa la respuesta del microservicio en tiempo real.</p></section>
+    <section class="status-row" aria-label="Estado del servicio">
+      <div class="status-card"><span class="status-dot" id="status-dot"></span><div><small>ESTADO DEL SERVICIO</small><strong id="service-status">Comprobando...</strong></div><button class="icon-button" id="refresh-status" title="Comprobar estado" aria-label="Comprobar estado">↻</button></div>
+      <div class="route-card"><small>RUTA ACTIVA</small><code>POST /api/v2/notifications/</code></div>
+    </section>
+    <section class="workspace">
+      <div class="panel form-panel">
+        <div class="panel-heading"><div><p class="eyebrow">SIMULADOR</p><h2>Enviar confirmación</h2></div><span class="method">POST</span></div>
+        <form id="notification-form">
+          <label for="order-id">ID del pedido</label><input id="order-id" name="order_id" type="number" min="1" value="123" required>
+          <label for="username">Nombre del comprador</label><input id="username" name="username" type="text" maxlength="150" value="ana" required>
+          <fieldset><legend>Canal de entrega</legend><label class="channel"><input type="radio" name="channel" value="console" checked><span><b>Console</b><small>Simulación en registro</small></span></label><label class="channel"><input type="radio" name="channel" value="email"><span><b>Email</b><small>Confirmación por correo</small></span></label></fieldset>
+          <button class="submit-button" type="submit"><span>Enviar notificación</span><b>→</b></button>
+        </form>
+      </div>
+      <div class="panel response-panel">
+        <div class="panel-heading"><div><p class="eyebrow">ÚLTIMA RESPUESTA</p><h2 id="response-title">Esperando una solicitud</h2></div><span class="response-code" id="response-code">—</span></div>
+        <pre id="response-body">Selecciona un canal y envía una confirmación para ver el contrato JSON del servicio.</pre><div class="response-note" id="response-note">La clave del servicio se mantiene en el backend de Django.</div>
+      </div>
+    </section>
+    <footer><span>VOLT COMMERCE</span><span>Arquitectura · Strangler Pattern</span><span id="clock"></span></footer>
+  </main>
+  <meta name="csrf-token" content="{{ csrf_token }}"><script src="{% static 'volt/dashboard.js' %}"></script>
+</body>
+</html>

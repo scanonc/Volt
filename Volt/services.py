@@ -102,12 +102,7 @@ class OrderService:
 
             cart.items.all().delete()
 
-<<<<<<< HEAD
         transaction.on_commit(lambda: NotificationFactory.create().send_confirmation(order))
-=======
-        notifier = NotificationFactory.create()
-        notifier.send_confirmation(order)
->>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3
         return order
 
 

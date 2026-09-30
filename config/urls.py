@@ -16,12 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from Volt.views import notification_dashboard
 
 urlpatterns = [
+    path('', notification_dashboard, name='dashboard'),
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
     path('api/v1/', include('Volt.urls', namespace='Volt_v1')),
-=======
->>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3
     path('api/', include('Volt.urls')),
 ]

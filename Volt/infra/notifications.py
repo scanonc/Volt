@@ -11,7 +11,6 @@ class ConsoleNotification(BaseNotification):
 class EmailNotification(BaseNotification):
     def send_confirmation(self, order):
         print(f'Correo de confirmación enviado para pedido #{order.id}')
-<<<<<<< HEAD
 
 
 class RemoteNotification(BaseNotification):
@@ -42,5 +41,3 @@ class RemoteNotification(BaseNotification):
             logging.getLogger(__name__).exception(
                 'No se pudo notificar el pedido %s; el pedido permanece confirmado.', order.id)
             return None
-=======
->>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3

@@ -199,8 +199,6 @@ Volt-main/
 ├── db.sqlite3
 ├── manage.py
 └── requirements.txt
-<<<<<<< HEAD
-
 ## Taller 02: extracción de notificaciones
 
 La implementación del patrón Strangler incorpora un servicio Flask de notificaciones,
@@ -213,10 +211,53 @@ cp .env.example .env
 docker compose up --build -d
 ```
 
-Entrada: `http://localhost:8080`. Las rutas `/api/` y `/api/v1/` llegan a Django;
-`/api/v2/notifications/` llega a Flask y exige `X-API-Key`.
+### Frontend del microservicio
+
+El panel de demostración está disponible en `http://localhost:8080/` con Docker,
+o en `http://127.0.0.1:8000/` durante una ejecución local. Permite consultar la
+salud del servicio, enviar una confirmación simulada y visualizar la respuesta JSON.
+
+El navegador no recibe `NOTIFICATIONS_API_KEY`: el panel envía las solicitudes al
+proxy de Django, que se comunica con Flask usando la clave configurada en el entorno.
+
+#### Ejecución local
+
+Abrir dos terminales desde la raíz del proyecto. En la primera, iniciar Flask:
+
+```powershell
+cd notifications_service
+$env:NOTIFICATIONS_API_KEY = "test-key"
+python -m flask --app app run --port 5000
+```
+
+En la segunda, iniciar Django con la URL local del microservicio:
+
+```powershell
+$env:NOTIFICATIONS_API_KEY = "test-key"
+$env:NOTIFICATIONS_URL = "http://127.0.0.1:5000/api/v2/notifications/"
+python manage.py migrate
+python manage.py runserver
+```
+
+Después visitar `http://127.0.0.1:8000/`. Completar el formulario con un ID de
+pedido positivo, un nombre de comprador y el canal `console` o `email`. Una
+respuesta HTTP `200` con `"status": "simulated"` confirma que el flujo funcionó;
+la notificación es simulada y no envía correos reales.
+
+Para comprobar Flask directamente:
+
+```powershell
+$headers = @{
+  "X-API-Key" = "test-key"
+  "Content-Type" = "application/json"
+}
+$body = '{"order_id":123,"username":"ana","channel":"console"}'
+Invoke-WebRequest http://127.0.0.1:5000/api/v2/notifications/ `
+  -Method POST -Headers $headers -Body $body
+```
+
+Entrada con Docker: `http://localhost:8080/`. Las rutas `/api/` y `/api/v1/`
+llegan a Django; `/api/v2/notifications/` llega a Flask y exige `X-API-Key`.
 
 Consulta [Migración a Microservicios (Strangler Pattern)](wiki/Migracion-a-Microservicios-Strangler-Pattern.md)
 para la matriz de decisión, arquitectura, contrato, pruebas, límites y publicación de la Wiki.
-=======
->>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3
