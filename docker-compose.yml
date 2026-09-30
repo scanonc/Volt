@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: volt
+      POSTGRES_USER: volt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Copia .env.example a .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U volt -d volt"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  django:
+    build: .
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: volt
+      POSTGRES_USER: volt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura .env}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Configura .env}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,django}
+      NOTIFICATIONS_BACKEND: remote
+      NOTIFICATIONS_URL: http://notifications:5000/api/v2/notifications/
+      NOTIFICATIONS_API_KEY: ${NOTIFICATIONS_API_KEY:?Configura .env}
+      NOTIFICATIONS_TIMEOUT: '2'
+    volumes:
+      - static_data:/app/staticfiles
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/categories/')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 20s
+  notifications:
+    build: ./notifications_service
+    environment:
+      NOTIFICATIONS_API_KEY: ${NOTIFICATIONS_API_KEY:?Configura .env}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health/')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  nginx:
+    image: nginx:1.28-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_data:/static:ro
+    depends_on:
+      django:
+        condition: service_healthy
+      notifications:
+        condition: service_healthy
+volumes:
+  postgres_data:
+  static_data:
