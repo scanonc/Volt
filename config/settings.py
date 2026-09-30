@@ -123,6 +123,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+<<<<<<< HEAD
 
 
 # Compose usa PostgreSQL; la ejecución local conserva SQLite.
@@ -141,3 +142,5 @@ NOTIFICATIONS_URL = os.environ.get('NOTIFICATIONS_URL', 'http://notifications:50
 NOTIFICATIONS_API_KEY = os.environ.get('NOTIFICATIONS_API_KEY', '')
 NOTIFICATIONS_TIMEOUT = float(os.environ.get('NOTIFICATIONS_TIMEOUT', '2'))
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+=======
+>>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3

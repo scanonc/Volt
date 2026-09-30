@@ -199,6 +199,7 @@ Volt-main/
 ├── db.sqlite3
 ├── manage.py
 └── requirements.txt
+<<<<<<< HEAD
 
 ## Taller 02: extracción de notificaciones
 
@@ -217,3 +218,5 @@ Entrada: `http://localhost:8080`. Las rutas `/api/` y `/api/v1/` llegan a Django
 
 Consulta [Migración a Microservicios (Strangler Pattern)](wiki/Migracion-a-Microservicios-Strangler-Pattern.md)
 para la matriz de decisión, arquitectura, contrato, pruebas, límites y publicación de la Wiki.
+=======
+>>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3

@@ -26,5 +26,8 @@ Arquitectura de Software 2026 (Núcleo de Negocio y Exposición de API Profesion
   (Factory).
 - **Pendiente (ver PlanDeTrabajo.md):** reseñas, favoritos y las entidades del
   asesor virtual (chat), a cargo de la siguiente iteración del equipo.
+<<<<<<< HEAD
 
 - [Migración a Microservicios (Strangler Pattern)](Migracion-a-Microservicios-Strangler-Pattern)
+=======
+>>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3

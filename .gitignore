@@ -23,6 +23,10 @@ db.sqlite3
 Thumbs.db
 .vscode/
 
+<<<<<<< HEAD
 # Keep architecture docs tracked in repo; no ignore for Contexto/
 .env
 staticfiles/
+=======
+# Keep architecture docs tracked in repo; no ignore for Contexto/
+>>>>>>> 616e6e1ef9f72e30884912055310c7b01b399cc3
