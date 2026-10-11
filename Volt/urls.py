@@ -10,7 +10,6 @@ from .views import (
     CreateOrderView,
     ProductDetailView,
     ProductListView,
-    notification_dashboard,
     notification_health,
     send_notification,
 )
@@ -18,7 +17,6 @@ from .views import (
 app_name = 'Volt'
 
 urlpatterns = [
-    path('', notification_dashboard, name='notification-dashboard'),
     path('notifications/health/', notification_health, name='notification-health'),
     path('notifications/send/', send_notification, name='notification-send'),
     path('addresses/', AddressListView.as_view(), name='address-list'),

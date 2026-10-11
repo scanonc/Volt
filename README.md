@@ -141,6 +141,21 @@ curl -u usuario:contraseña -X POST http://localhost:8000/api/cart/items/ \
   -d '{"product_id": 1, "quantity": 2}'
 ```
 
+## Tienda web (frontend)
+
+La tienda queda en `http://localhost:8000/` (o `http://localhost:8080/` con Docker).
+Es una interfaz responsive que consume la API REST existente:
+
+- Catálogo con filtro por categoría, búsqueda, ordenamiento y "solo disponibles".
+- Detalle de producto con selector de cantidad.
+- Carrito lateral, direcciones de envío y finalización de compra (`POST /api/orders/`),
+  que dispara la notificación de confirmación.
+- Registro (`/registro/`), ingreso (`/login/`) y salida con sesión de Django.
+- El panel del microservicio de notificaciones se movió a `/notificaciones/`.
+
+Para ver datos de ejemplo: `python manage.py cargar_demo` (usuario `volt_demo`,
+contraseña `VoltDemo2026!`).
+
 ## Estructura del proyecto
 
 ```text
@@ -213,8 +228,8 @@ docker compose up --build -d
 
 ### Frontend del microservicio
 
-El panel de demostración está disponible en `http://localhost:8080/` con Docker,
-o en `http://127.0.0.1:8000/` durante una ejecución local. Permite consultar la
+El panel de demostración está disponible en `http://localhost:8080/notificaciones/` con Docker,
+o en `http://127.0.0.1:8000/notificaciones/` durante una ejecución local. Permite consultar la
 salud del servicio, enviar una confirmación simulada y visualizar la respuesta JSON.
 
 El navegador no recibe `NOTIFICATIONS_API_KEY`: el panel envía las solicitudes al
@@ -239,7 +254,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Después visitar `http://127.0.0.1:8000/`. Completar el formulario con un ID de
+Después visitar `http://127.0.0.1:8000/notificaciones/`. Completar el formulario con un ID de
 pedido positivo, un nombre de comprador y el canal `console` o `email`. Una
 respuesta HTTP `200` con `"status": "simulated"` confirma que el flujo funcionó;
 la notificación es simulada y no envía correos reales.
@@ -256,7 +271,7 @@ Invoke-WebRequest http://127.0.0.1:5000/api/v2/notifications/ `
   -Method POST -Headers $headers -Body $body
 ```
 
-Entrada con Docker: `http://localhost:8080/`. Las rutas `/api/` y `/api/v1/`
+Entrada con Docker: `http://localhost:8080/` (tienda). Las rutas `/api/` y `/api/v1/`
 llegan a Django; `/api/v2/notifications/` llega a Flask y exige `X-API-Key`.
 
 Consulta [Migración a Microservicios (Strangler Pattern)](wiki/Migracion-a-Microservicios-Strangler-Pattern.md)

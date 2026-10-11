@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+{% block title %}Ingresar · Volt{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block body %}
+<main class="auth-card">
+  <a class="brand" href="/">V<span>OLT</span></a>
+  <h1>Bienvenido de nuevo</h1>
+  <p class="muted">Ingresa para ver tu carrito y finalizar tus compras.</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.errors %}<div class="alert">Usuario o contraseña incorrectos.</div>{% endif %}
+    <label for="id_username">Usuario</label>
+    <input id="id_username" name="username" type="text" autocomplete="username" required autofocus>
+    <label for="id_password">Contraseña</label>
+    <input id="id_password" name="password" type="password" autocomplete="current-password" required>
+    <input type="hidden" name="next" value="{{ next|default:'/' }}">
+    <button class="btn btn-primary btn-block" type="submit">Ingresar</button>
+  </form>
+  <p class="muted small">¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a> · <a href="/">Volver a la tienda</a></p>
+</main>
+{% endblock %}

@@ -631,3 +631,25 @@ class CatalogApiTests(TestCase):
         response = self.client.get('/api/products/9999/')
 
         self.assertEqual(response.status_code, 404)
+
+
+class StoreFrontendTests(TestCase):
+    def test_store_home_renders(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'store.js')
+
+    def test_notification_dashboard_moved(self):
+        self.assertEqual(self.client.get('/notificaciones/').status_code, 200)
+
+    def test_login_page_renders(self):
+        self.assertEqual(self.client.get('/login/').status_code, 200)
+
+    def test_register_creates_user_and_logs_in(self):
+        response = self.client.post('/registro/', {
+            'username': 'nueva_clienta',
+            'password1': 'Clave-Segura-2026',
+            'password2': 'Clave-Segura-2026',
+        })
+        self.assertRedirects(response, '/')
+        self.assertEqual(self.client.get('/').context['user'].username, 'nueva_clienta')
