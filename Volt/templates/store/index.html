@@ -1,0 +1,76 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block head %}<meta name="csrf-token" content="{{ csrf_token }}">{% endblock %}
+{% block body %}
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/">V<span>OLT</span></a>
+    <div class="search"><input id="search" type="search" placeholder="Buscar prendas…" aria-label="Buscar prendas"></div>
+    <nav class="nav">
+      <a href="#catalogo">Catálogo</a>
+      <a href="{% url 'dashboard' %}">Notificaciones</a>
+      {% if user.is_authenticated %}
+        <span class="user-chip" title="Sesión iniciada">{{ user.username }}</span>
+        <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="link-btn" type="submit">Salir</button></form>
+      {% else %}
+        <a href="{% url 'login' %}">Ingresar</a>
+        <a class="btn btn-small" href="{% url 'register' %}">Registrarme</a>
+      {% endif %}
+      <button class="cart-btn" id="open-cart" aria-label="Abrir carrito">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div>
+        <p class="eyebrow">NUEVA COLECCIÓN</p>
+        <h1>Moda con<br><em>energía propia.</em></h1>
+        <p class="lede">Prendas esenciales para tu día a día. Elige, agrega al carrito y recibe tu pedido con confirmación inmediata.</p>
+        <a class="btn btn-primary" href="#catalogo">Ver catálogo →</a>
+      </div>
+      <div class="hero-art" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="bolt">⚡</span></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="catalogo">
+    <div class="section-head">
+      <div><p class="eyebrow">CATÁLOGO</p><h2>Todas las prendas</h2></div>
+      <div class="controls">
+        <select id="sort" aria-label="Ordenar">
+          <option value="default">Ordenar: destacados</option>
+          <option value="price-asc">Precio: menor a mayor</option>
+          <option value="price-desc">Precio: mayor a menor</option>
+          <option value="name">Nombre A–Z</option>
+        </select>
+        <label class="check"><input type="checkbox" id="only-stock"> Solo disponibles</label>
+      </div>
+    </div>
+    <div class="chips" id="chips" role="tablist" aria-label="Categorías"></div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+    <p class="empty" id="empty" hidden>No encontramos prendas con esos filtros.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><div class="wrap"><span>VOLT COMMERCE</span><span>Tienda virtual de moda · Arquitectura de Software 2026</span></div></footer>
+
+<!-- Modal de producto -->
+<div class="overlay" id="modal-overlay" hidden></div>
+<div class="modal" id="product-modal" role="dialog" aria-modal="true" hidden></div>
+
+<!-- Carrito -->
+<aside class="drawer" id="drawer" aria-label="Carrito de compras" hidden>
+  <div class="drawer-head"><h2>Tu carrito</h2><button class="icon-btn" id="close-cart" aria-label="Cerrar">✕</button></div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</aside>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>window.VOLT={authenticated:{{ user.is_authenticated|yesno:'true,false' }},loginUrl:"{% url 'login' %}"};</script>
+<script src="{% static 'volt/store.js' %}"></script>
+{% endblock %}

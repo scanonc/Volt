@@ -140,3 +140,7 @@ NOTIFICATIONS_URL = os.environ.get('NOTIFICATIONS_URL', 'http://notifications:50
 NOTIFICATIONS_API_KEY = os.environ.get('NOTIFICATIONS_API_KEY', '')
 NOTIFICATIONS_TIMEOUT = float(os.environ.get('NOTIFICATIONS_TIMEOUT', '2'))
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

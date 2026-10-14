@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+{% block title %}Crear cuenta · Volt{% endblock %}
+{% block body_class %}auth-page{% endblock %}
+{% block body %}
+<main class="auth-card">
+  <a class="brand" href="/">V<span>OLT</span></a>
+  <h1>Crea tu cuenta</h1>
+  <p class="muted">Guarda tu carrito, tus direcciones y tus pedidos.</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+    {% endfor %}
+    <button class="btn btn-primary btn-block" type="submit">Crear cuenta</button>
+  </form>
+  <p class="muted small">¿Ya tienes cuenta? <a href="{% url 'login' %}">Ingresa</a> · <a href="/">Volver a la tienda</a></p>
+</main>
+{% endblock %}
