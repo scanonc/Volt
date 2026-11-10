@@ -1,7 +1,11 @@
 import hmac
 from flask import Blueprint, current_app, jsonify, request
 
-from app.tasks.indexing import reindex_catalog_task, sync_product_task
+from app.tasks.indexing import (
+    delete_product_task,
+    reindex_catalog_task,
+    upsert_product_task,
+)
 
 internal_bp = Blueprint('internal', __name__, url_prefix='/internal')
 
@@ -48,8 +52,10 @@ def sync_product():
         enqueuer = current_app.config.get('SYNC_TASK_ENQUEUER')
         if callable(enqueuer):
             enqueuer(product_id, event)
+        elif event == 'upserted':
+            upsert_product_task.delay(product_id)
         else:
-            sync_product_task.delay(product_id, event)
+            delete_product_task.delay(product_id)
     except Exception as exc:
         current_app.logger.error("No se pudo encolar la tarea de sincronización en Redis/Celery: %s", exc)
         return jsonify(error={
@@ -68,7 +74,11 @@ def trigger_reindex():
         return auth_error
 
     try:
-        reindex_catalog_task.delay()
+        enqueuer = current_app.config.get('REINDEX_TASK_ENQUEUER')
+        if callable(enqueuer):
+            enqueuer()
+        else:
+            reindex_catalog_task.delay()
     except Exception as exc:
         current_app.logger.error("No se pudo encolar la tarea de reindexación en Redis/Celery: %s", exc)
         return jsonify(error={

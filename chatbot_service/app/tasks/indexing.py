@@ -12,6 +12,8 @@ from .celery_app import celery_app
 
 logger = logging.getLogger(__name__)
 
+RETRYABLE_ERRORS = (CatalogClientError, ProviderError)
+
 
 def build_default_indexer() -> IndexerService:
     """Construye una instancia de IndexerService con la configuración por defecto."""
@@ -36,41 +38,103 @@ def build_default_indexer() -> IndexerService:
 
 
 @celery_app.task(
-    name='chatbot.sync_product',
-    autoretry_for=(CatalogClientError, ProviderError),
+    name='chatbot.upsert_product',
+    autoretry_for=RETRYABLE_ERRORS,
     max_retries=3,
     retry_backoff=True,
+    retry_backoff_max=60,
+)
+def upsert_product_task(
+    product_id: int,
+    indexer: Optional[IndexerService] = None,
+) -> Dict[str, Any]:
+    """Tarea Celery idempotente para crear o actualizar el embedding de un producto."""
+    svc = indexer or build_default_indexer()
+    pid = int(product_id)
+    try:
+        status = svc.upsert_product(pid)
+        logger.info("Tarea upsert_product completada para product_id=%d: status=%s", pid, status)
+        return {'product_id': pid, 'event': 'upserted', 'status': status}
+    except Exception as exc:
+        logger.error("Fallo en upsert_product para product_id=%d: %s", pid, exc)
+        raise
+
+
+@celery_app.task(
+    name='chatbot.delete_product',
+    autoretry_for=RETRYABLE_ERRORS,
+    max_retries=3,
+    retry_backoff=True,
+    retry_backoff_max=60,
+)
+def delete_product_task(
+    product_id: int,
+    indexer: Optional[IndexerService] = None,
+) -> Dict[str, Any]:
+    """Tarea Celery para eliminar un producto del índice SQLite."""
+    svc = indexer or build_default_indexer()
+    pid = int(product_id)
+    try:
+        removed = svc.delete_product(pid)
+        status = 'deleted' if removed else 'not_found'
+        logger.info("Tarea delete_product completada para product_id=%d: status=%s", pid, status)
+        return {'product_id': pid, 'event': 'deleted', 'status': status}
+    except Exception as exc:
+        logger.error("Fallo en delete_product para product_id=%d: %s", pid, exc)
+        raise
+
+
+@celery_app.task(
+    name='chatbot.sync_product',
+    autoretry_for=RETRYABLE_ERRORS,
+    max_retries=3,
+    retry_backoff=True,
+    retry_backoff_max=60,
 )
 def sync_product_task(
     product_id: int,
     event: str = 'upserted',
     indexer: Optional[IndexerService] = None,
 ) -> Dict[str, Any]:
-    """Tarea envoltorio delgado de Celery para sincronizar un producto individual."""
+    """Tarea Celery unificada que despacha upsert o delete según el evento recibido desde Django."""
     svc = indexer or build_default_indexer()
     pid = int(product_id)
 
-    if event == 'deleted':
-        removed = svc.delete_product(pid)
-        return {'product_id': pid, 'event': event, 'status': 'deleted' if removed else 'not_found'}
+    try:
+        if event == 'deleted':
+            removed = svc.delete_product(pid)
+            status = 'deleted' if removed else 'not_found'
+            logger.info("Sincronización (deleted) completada para product_id=%d: %s", pid, status)
+            return {'product_id': pid, 'event': event, 'status': status}
 
-    if event == 'upserted':
-        status = svc.upsert_product(pid)
-        return {'product_id': pid, 'event': event, 'status': status}
+        if event == 'upserted':
+            status = svc.upsert_product(pid)
+            logger.info("Sincronización (upserted) completada para product_id=%d: %s", pid, status)
+            return {'product_id': pid, 'event': event, 'status': status}
+    except Exception as exc:
+        logger.error("Fallo en sync_product para product_id=%d (%s): %s", pid, event, exc)
+        raise
 
     raise ValueError(f"Evento de sincronización no soportado: {event}")
 
 
 @celery_app.task(
     name='chatbot.reindex_catalog',
-    autoretry_for=(CatalogClientError, ProviderError),
+    autoretry_for=RETRYABLE_ERRORS,
     max_retries=3,
     retry_backoff=True,
+    retry_backoff_max=60,
 )
 def reindex_catalog_task(
     page_size: int = 50,
     indexer: Optional[IndexerService] = None,
 ) -> Dict[str, int]:
-    """Tarea envoltorio delgado de Celery para reindexación inicial o completa del catálogo."""
+    """Tarea Celery para reindexación inicial o completa del catálogo con limpieza de obsoletos."""
     svc = indexer or build_default_indexer()
-    return svc.reindex_catalog(page_size=page_size)
+    try:
+        summary = svc.reindex_catalog(page_size=page_size)
+        logger.info("Reindexación de catálogo completada: %s", summary)
+        return summary
+    except Exception as exc:
+        logger.error("Fallo en reindex_catalog: %s", exc)
+        raise
