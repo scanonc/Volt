@@ -1,33 +1,55 @@
 services:
   db:
     image: postgres:17-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_DB: volt
       POSTGRES_USER: volt
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Copia .env.example a .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - volt_net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U volt -d volt"]
       interval: 5s
       timeout: 3s
       retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks:
+      - volt_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   django:
     build: .
+    restart: unless-stopped
     environment:
       POSTGRES_HOST: db
       POSTGRES_DB: volt
       POSTGRES_USER: volt
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configura .env}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Configura .env}
-      DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-False}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,django}
       NOTIFICATIONS_BACKEND: remote
       NOTIFICATIONS_URL: http://notifications:5000/api/v2/notifications/
       NOTIFICATIONS_API_KEY: ${NOTIFICATIONS_API_KEY:?Configura .env}
       NOTIFICATIONS_TIMEOUT: '2'
+      CHATBOT_SYNC_URL: ${CHATBOT_SYNC_URL:-http://chatbot:5001/internal/products/sync}
+      CHATBOT_INTERNAL_API_KEY: ${CHATBOT_INTERNAL_API_KEY:?Configura .env}
+      CHATBOT_SYNC_TIMEOUT: ${CHATBOT_SYNC_TIMEOUT:-2.0}
     volumes:
       - static_data:/app/staticfiles
+      - django_data:/app/data
+    networks:
+      - volt_net
     depends_on:
       db:
         condition: service_healthy
@@ -37,27 +59,104 @@ services:
       timeout: 3s
       retries: 20
       start_period: 20s
+
+  chatbot:
+    build: ./chatbot_service
+    restart: unless-stopped
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_EMBEDDING_MODEL: ${GEMINI_EMBEDDING_MODEL:-gemini-embedding-001}
+      GEMINI_TEXT_MODEL: ${GEMINI_TEXT_MODEL:-gemini-2.5-flash-lite}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-768}
+      CHATBOT_DB_PATH: /data/chatbot.sqlite3
+      DJANGO_BASE_URL: http://django:8000
+      DJANGO_TIMEOUT: ${DJANGO_TIMEOUT:-2.0}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:?Configura .env}
+      SIMILARITY_THRESHOLD: ${SIMILARITY_THRESHOLD:-0.55}
+      TOP_K: ${TOP_K:-10}
+      MAX_RESULTS: ${MAX_RESULTS:-4}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - chatbot_data:/data
+    networks:
+      volt_net:
+        aliases:
+          - flask
+    depends_on:
+      django:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5001/api/chatbot/health/')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  celery-worker:
+    build: ./chatbot_service
+    command: ["celery", "-A", "app.tasks.celery_app:celery_app", "worker", "--loglevel=info", "--concurrency=2"]
+    restart: unless-stopped
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_EMBEDDING_MODEL: ${GEMINI_EMBEDDING_MODEL:-gemini-embedding-001}
+      GEMINI_TEXT_MODEL: ${GEMINI_TEXT_MODEL:-gemini-2.5-flash-lite}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-768}
+      CHATBOT_DB_PATH: /data/chatbot.sqlite3
+      DJANGO_BASE_URL: http://django:8000
+      DJANGO_TIMEOUT: ${DJANGO_TIMEOUT:-2.0}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:?Configura .env}
+      SIMILARITY_THRESHOLD: ${SIMILARITY_THRESHOLD:-0.55}
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - chatbot_data:/data
+    networks:
+      volt_net:
+        aliases:
+          - chatbot-worker
+    depends_on:
+      django:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   notifications:
     build: ./notifications_service
+    restart: unless-stopped
     environment:
       NOTIFICATIONS_API_KEY: ${NOTIFICATIONS_API_KEY:?Configura .env}
+    networks:
+      - volt_net
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health/')"]
       interval: 5s
       timeout: 3s
       retries: 10
+
   nginx:
     image: nginx:1.28-alpine
+    restart: unless-stopped
     ports:
-      - "8080:80"
+      - "${NGINX_PORT:-80}:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - static_data:/static:ro
+    networks:
+      - volt_net
     depends_on:
       django:
         condition: service_healthy
       notifications:
         condition: service_healthy
+      chatbot:
+        condition: service_healthy
+
+networks:
+  volt_net:
+    driver: bridge
+
 volumes:
   postgres_data:
+  django_data:
+  chatbot_data:
   static_data:

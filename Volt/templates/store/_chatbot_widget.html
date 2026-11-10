@@ -1,0 +1,32 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'volt/chatbot.css' %}">
+<div id="vc-root" class="vc-root" data-endpoint="/api/chatbot/message/">
+  <button type="button" class="vc-fab" id="vc-toggle" aria-label="Abrir asesor virtual" aria-expanded="false" aria-controls="vc-panel">
+    <svg class="vc-ico-chat" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>
+    <svg class="vc-ico-x" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <section class="vc-panel" id="vc-panel" role="dialog" aria-label="Asesor virtual Volt" hidden>
+    <header class="vc-head">
+      <div class="vc-avatar" aria-hidden="true">⚡</div>
+      <div class="vc-title"><strong>Asesor Volt</strong><span><i class="vc-dot"></i>En línea · te ayudo a elegir</span></div>
+      <button type="button" class="vc-hbtn" id="vc-reset" aria-label="Nueva conversación" title="Nueva conversación">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></svg>
+      </button>
+      <button type="button" class="vc-hbtn" id="vc-close" aria-label="Cerrar chat" title="Cerrar">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+    <div class="vc-messages" id="vc-messages" aria-live="polite"></div>
+    <div class="vc-suggest" id="vc-suggest" hidden></div>
+    <form class="vc-form" id="vc-form" autocomplete="off">
+      <div class="vc-field">
+        <textarea id="vc-input" rows="1" maxlength="1000" placeholder="Escribe tu consulta…" aria-label="Mensaje"></textarea>
+        <span class="vc-count" id="vc-count" hidden></span>
+      </div>
+      <button type="submit" id="vc-send" class="vc-send" aria-label="Enviar mensaje" disabled>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.3 10l12 2-12 2z"/></svg>
+      </button>
+    </form>
+  </section>
+</div>
+<script src="{% static 'volt/chatbot.js' %}" defer></script>
