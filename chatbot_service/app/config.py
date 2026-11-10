@@ -25,6 +25,8 @@ class Config:
     SIMILARITY_THRESHOLD = float(os.environ.get('SIMILARITY_THRESHOLD', '0.55'))
     TOP_K = int(os.environ.get('TOP_K', '10'))
     MAX_RESULTS = int(os.environ.get('MAX_RESULTS', '4'))
+    MAX_MESSAGE_LENGTH = int(os.environ.get('MAX_MESSAGE_LENGTH', '1000'))
+    HISTORY_LIMIT = int(os.environ.get('HISTORY_LIMIT', '6'))
 
     # Celery / Redis
     REDIS_URL = os.environ.get('REDIS_URL', 'redis://redis:6379/0')

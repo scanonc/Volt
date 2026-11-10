@@ -18,6 +18,14 @@ from .search import (
     sanitize_filters,
     matches_strict_filters,
 )
+from .chat import (
+    ChatService,
+    ConversationNotFoundError,
+    parse_extraction_json,
+    format_catalog_product,
+    EXTRACTION_SYSTEM_PROMPT,
+    ADVISOR_SYSTEM_PROMPT,
+)
 
 __all__ = [
     'CatalogClient',
@@ -34,4 +42,10 @@ __all__ = [
     'SearchService',
     'sanitize_filters',
     'matches_strict_filters',
+    'ChatService',
+    'ConversationNotFoundError',
+    'parse_extraction_json',
+    'format_catalog_product',
+    'EXTRACTION_SYSTEM_PROMPT',
+    'ADVISOR_SYSTEM_PROMPT',
 ]

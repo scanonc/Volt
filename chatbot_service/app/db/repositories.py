@@ -1,6 +1,7 @@
 import json
 import sqlite3
 from typing import Any, Dict, List, Optional, Set
+import uuid
 
 from .sqlite import get_db_connection
 
@@ -138,21 +139,15 @@ class ConversationRepository:
     def _get_conn(self) -> sqlite3.Connection:
         return get_db_connection(self.db_path)
 
-    def get_or_create_conversation(self, session_id: str) -> Dict[str, Any]:
-        """Busca o crea una conversación por su session_id."""
+    def create_conversation(self, session_id: Optional[str] = None) -> Dict[str, Any]:
+        """Crea una nueva conversación generando un UUID si no se especifica session_id."""
+        sid = session_id or uuid.uuid4().hex
         conn = self._get_conn()
         try:
             with conn:
-                row = conn.execute(
-                    "SELECT id, session_id, created_at FROM conversations WHERE session_id = ?;",
-                    (session_id,),
-                ).fetchone()
-                if row:
-                    return {'id': row['id'], 'session_id': row['session_id'], 'created_at': row['created_at']}
-
                 cursor = conn.execute(
                     "INSERT INTO conversations (session_id) VALUES (?);",
-                    (session_id,),
+                    (sid,),
                 )
                 conv_id = cursor.lastrowid
                 row = conn.execute(
@@ -163,14 +158,26 @@ class ConversationRepository:
         finally:
             conn.close()
 
+    def get_or_create_conversation(self, session_id: str) -> Dict[str, Any]:
+        """Busca o crea una conversación por su session_id."""
+        existing = self.get_conversation(session_id)
+        if existing is not None:
+            return existing
+        return self.create_conversation(session_id=session_id)
+
     def get_conversation(self, session_id: str) -> Optional[Dict[str, Any]]:
-        """Obtiene una conversación si existe."""
+        """Obtiene una conversación por session_id (o por id numérico si aplica)."""
         conn = self._get_conn()
         try:
             row = conn.execute(
                 "SELECT id, session_id, created_at FROM conversations WHERE session_id = ?;",
-                (session_id,),
+                (str(session_id),),
             ).fetchone()
+            if row is None and str(session_id).isdigit():
+                row = conn.execute(
+                    "SELECT id, session_id, created_at FROM conversations WHERE id = ?;",
+                    (int(session_id),),
+                ).fetchone()
             if row is None:
                 return None
             return {'id': row['id'], 'session_id': row['session_id'], 'created_at': row['created_at']}

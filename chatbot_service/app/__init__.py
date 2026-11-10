@@ -1,10 +1,13 @@
 import logging
+import click
 from flask import Flask, jsonify
 from werkzeug.exceptions import HTTPException
 
+from .api.internal import internal_bp
 from .api.public import public_bp
 from .config import Config
 from .db.sqlite import init_db
+from .tasks.indexing import build_default_indexer
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +38,18 @@ def create_app(test_config=None) -> Flask:
 
     # Registro de Blueprints
     app.register_blueprint(public_bp)
+    app.register_blueprint(internal_bp)
+
+    # Comando CLI para reindexación inicial/manual
+    @app.cli.command("reindex")
+    def reindex_command():
+        """Ejecuta la reindexación completa del catálogo desde Django."""
+        indexer = build_default_indexer()
+        summary = indexer.reindex_catalog()
+        click.echo(
+            f"Reindexación completada: {summary['indexed']} indexados, "
+            f"{summary['unchanged']} sin cambios, {summary['deleted']} eliminados."
+        )
 
     # Manejadores globales de errores (JSON limpio sin detalles internos)
     @app.errorhandler(HTTPException)
