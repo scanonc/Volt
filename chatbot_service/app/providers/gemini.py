@@ -120,12 +120,12 @@ class GeminiEmbeddingAdapter(EmbeddingProvider):
 
 
 class GeminiTextAdapter(TextGenerator):
-    """Adaptador para el modelo generativo de Gemini (gemini-2.5-flash-lite)."""
+    """Adaptador para el modelo generativo de Gemini (gemini-3.8-flash)."""
 
     def __init__(
         self,
         api_key: str = '',
-        model: str = 'gemini-2.5-flash-lite',
+        model: str = 'gemini-3.8-flash',
         client: Optional[genai.Client] = None,
     ):
         self.model = model

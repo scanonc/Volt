@@ -10,7 +10,7 @@ class Config:
     # Gemini (NO obligatoria para tests ni arranque inicial)
     GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
     GEMINI_EMBEDDING_MODEL = os.environ.get('GEMINI_EMBEDDING_MODEL', 'gemini-embedding-001')
-    GEMINI_TEXT_MODEL = os.environ.get('GEMINI_TEXT_MODEL', 'gemini-2.5-flash-lite')
+    GEMINI_TEXT_MODEL = os.environ.get('GEMINI_TEXT_MODEL', 'gemini-3.8-flash')
     EMBEDDING_DIM = int(os.environ.get('EMBEDDING_DIM', '768'))
 
     # Base de datos SQLite

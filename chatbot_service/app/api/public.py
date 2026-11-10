@@ -34,7 +34,7 @@ def _get_chat_service() -> ChatService:
 
     text_generator = current_app.config.get('TEXT_GENERATOR') or GeminiTextAdapter(
         api_key=current_app.config.get('GEMINI_API_KEY', ''),
-        model=current_app.config.get('GEMINI_TEXT_MODEL', 'gemini-2.5-flash-lite'),
+        model=current_app.config.get('GEMINI_TEXT_MODEL', 'gemini-3.8-flash'),
     )
 
     search_service = current_app.config.get('SEARCH_SERVICE') or SearchService(
