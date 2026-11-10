@@ -11,18 +11,18 @@ from Volt.services import OrderService, OrderServiceError
 
 
 PRODUCTS = [
-    ('Camisetas', 'Camiseta básica blanca [DEMO]', 'Algodón, talla M.', '39900', 30),
-    ('Camisetas', 'Camiseta oversize negra [DEMO]', 'Algodón, talla L.', '59900', 25),
-    ('Camisas', 'Camisa de lino beige [DEMO]', 'Manga larga, talla M.', '119900', 15),
-    ('Camisas', 'Camisa de cuadros [DEMO]', 'Franela, talla L.', '89900', 18),
-    ('Pantalones', 'Jean azul clásico [DEMO]', 'Corte recto, talla 32.', '129900', 20),
-    ('Pantalones', 'Pantalón cargo verde [DEMO]', 'Bolsillos laterales, talla 30.', '139900', 12),
-    ('Vestidos', 'Vestido floral [DEMO]', 'Tela ligera, talla M.', '149900', 10),
-    ('Chaquetas', 'Chaqueta denim [DEMO]', 'Denim azul, talla L.', '189900', 8),
-    ('Buzos', 'Buzo con capota gris [DEMO]', 'Algodón perchado, talla M.', '109900', 16),
-    ('Ropa deportiva', 'Leggings negros [DEMO]', 'Tela elástica, talla M.', '79900', 22),
-    ('Ropa deportiva', 'Short deportivo azul [DEMO]', 'Secado rápido, talla L.', '49900', 20),
-    ('Accesorios', 'Gorra beige [DEMO]', 'Talla ajustable.', '34900', 25),
+    ('Camisetas', 'Camiseta básica blanca [DEMO]', 'Algodón, talla M.', '39900', 30, 'blanco', 'algodón', 'unisex', ['S', 'M', 'L'], 'casual'),
+    ('Camisetas', 'Camiseta oversize negra [DEMO]', 'Algodón, talla L.', '59900', 25, 'negro', 'algodón', 'unisex', ['M', 'L', 'XL'], 'urbano'),
+    ('Camisas', 'Camisa de lino beige [DEMO]', 'Manga larga, talla M.', '119900', 15, 'beige', 'lino', 'hombre', ['S', 'M', 'L'], 'elegante'),
+    ('Camisas', 'Camisa de cuadros [DEMO]', 'Franela, talla L.', '89900', 18, 'rojo', 'franela', 'hombre', ['M', 'L', 'XL'], 'casual'),
+    ('Pantalones', 'Jean azul clásico [DEMO]', 'Corte recto, talla 32.', '129900', 20, 'azul', 'denim', 'unisex', ['S', 'M', 'L'], 'casual'),
+    ('Pantalones', 'Pantalón cargo verde [DEMO]', 'Bolsillos laterales, talla 30.', '139900', 12, 'verde', 'algodón', 'hombre', ['M', 'L'], 'urbano'),
+    ('Vestidos', 'Vestido floral [DEMO]', 'Tela ligera, talla M.', '149900', 10, 'multicolor', 'poliéster', 'mujer', ['XS', 'S', 'M'], 'elegante'),
+    ('Chaquetas', 'Chaqueta denim [DEMO]', 'Denim azul, talla L.', '189900', 8, 'azul', 'denim', 'unisex', ['M', 'L'], 'urbano'),
+    ('Buzos', 'Buzo con capota gris [DEMO]', 'Algodón perchado, talla M.', '109900', 16, 'gris', 'algodón', 'unisex', ['S', 'M', 'L'], 'casual'),
+    ('Ropa deportiva', 'Leggings negros [DEMO]', 'Tela elástica, talla M.', '79900', 22, 'negro', 'poliéster', 'mujer', ['XS', 'S', 'M'], 'deportivo'),
+    ('Ropa deportiva', 'Short deportivo azul [DEMO]', 'Secado rápido, talla L.', '49900', 20, 'azul', 'poliéster', 'unisex', ['M', 'L'], 'deportivo'),
+    ('Accesorios', 'Gorra beige [DEMO]', 'Talla ajustable.', '34900', 25, 'beige', 'algodón', 'unisex', ['M'], 'casual'),
 ]
 
 
@@ -46,11 +46,20 @@ class Command(BaseCommand):
                           'country': 'Colombia', 'is_default': not user.addresses.exists()})
             products = []
             count = 0
-            for category_name, name, description, price, stock in PRODUCTS:
+            for category_name, name, description, price, stock, color, material, gender, available_sizes, style in PRODUCTS:
                 category, _ = Category.objects.get_or_create(name=category_name)
-                product, new = Product.objects.get_or_create(
+                product, new = Product.objects.update_or_create(
                     name=name, category=category,
-                    defaults={'description': description, 'price': Decimal(price), 'stock': stock})
+                    defaults={
+                        'description': description,
+                        'price': Decimal(price),
+                        'stock': stock,
+                        'color': color,
+                        'material': material,
+                        'gender': gender,
+                        'available_sizes': available_sizes,
+                        'style': style,
+                    })
                 products.append(product)
                 count += int(new)
             cart, _ = Cart.objects.get_or_create(user=user)

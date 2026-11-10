@@ -15,6 +15,17 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    class Gender(models.TextChoices):
+        HOMBRE = 'hombre', 'Hombre'
+        MUJER = 'mujer', 'Mujer'
+        UNISEX = 'unisex', 'Unisex'
+
+    class Style(models.TextChoices):
+        CASUAL = 'casual', 'Casual'
+        DEPORTIVO = 'deportivo', 'Deportivo'
+        ELEGANTE = 'elegante', 'Elegante'
+        URBANO = 'urbano', 'Urbano'
+
     name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
     price = models.DecimalField(
@@ -24,6 +35,11 @@ class Product(models.Model):
     )
     stock = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    color = models.CharField(max_length=50, blank=True, default='')
+    material = models.CharField(max_length=100, blank=True, default='')
+    gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender.UNISEX)
+    available_sizes = models.JSONField(default=list, blank=True)
+    style = models.CharField(max_length=20, choices=Style.choices, default=Style.CASUAL)
 
     def __str__(self):
         return self.name

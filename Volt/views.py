@@ -230,11 +230,24 @@ class CategoryListView(APIView):
 
 class ProductListView(APIView):
     def get(self, request, *args, **kwargs):
-        products = Product.objects.select_related('category').all()
+        products = Product.objects.select_related('category').all().order_by('id')
+
+        ids_param = request.query_params.get('ids')
+        if ids_param is not None:
+            raw_ids = [pid.strip() for pid in ids_param.split(',') if pid.strip()]
+            valid_ids = [int(pid) for pid in raw_ids if pid.isdigit()]
+            products = products.filter(id__in=valid_ids)
 
         category_id = request.query_params.get('category')
         if category_id is not None:
             products = products.filter(category_id=category_id)
+
+        limit_param = request.query_params.get('limit')
+        if limit_param is not None and limit_param.isdigit():
+            limit = int(limit_param)
+            offset_param = request.query_params.get('offset', '0')
+            offset = int(offset_param) if offset_param.isdigit() else 0
+            products = products[offset:offset + limit]
 
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

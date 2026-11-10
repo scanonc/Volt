@@ -139,6 +139,12 @@ NOTIFICATIONS_BACKEND = os.environ.get('NOTIFICATIONS_BACKEND', 'local')
 NOTIFICATIONS_URL = os.environ.get('NOTIFICATIONS_URL', 'http://notifications:5000/api/v2/notifications/')
 NOTIFICATIONS_API_KEY = os.environ.get('NOTIFICATIONS_API_KEY', '')
 NOTIFICATIONS_TIMEOUT = float(os.environ.get('NOTIFICATIONS_TIMEOUT', '2'))
+
+# Microservicio Chatbot
+CHATBOT_SYNC_URL = os.environ.get('CHATBOT_SYNC_URL', '')
+CHATBOT_INTERNAL_API_KEY = os.environ.get('CHATBOT_INTERNAL_API_KEY', '')
+CHATBOT_SYNC_TIMEOUT = float(os.environ.get('CHATBOT_SYNC_TIMEOUT', '2.0'))
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 LOGIN_URL = '/login/'
