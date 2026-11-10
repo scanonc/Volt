@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (
+from .api.views import (
     AddressDetailView,
     AddressListView,
     CartItemDetailView,
@@ -10,6 +10,8 @@ from .views import (
     CreateOrderView,
     ProductDetailView,
     ProductListView,
+)
+from .views import (
     notification_health,
     send_notification,
 )
