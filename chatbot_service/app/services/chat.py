@@ -36,7 +36,12 @@ ADVISOR_SYSTEM_PROMPT = (
     "disponibles que cumplan todos los criterios (menciona si hay opciones agotadas cuando aparezcan en el contexto) "
     "y sugiere relajar algún filtro.\n"
     "5. Si la consulta del usuario es demasiado ambigua o insuficiente para recomendar, pide una aclaración breve "
-    "(por ejemplo ocasión, estilo, clima o presupuesto)."
+    "(por ejemplo ocasión, estilo, clima o presupuesto).\n"
+    "6. FORMATO Y ESTILO: NUNCA uses asteriscos (*) ni formato markdown con asteriscos en tus respuestas. "
+    "Escribe en texto limpio, fluido y en párrafos naturales sin viñetas de asterisco, ya que las prendas "
+    "recomendadas se mostrarán automáticamente en tarjetas interactivas debajo de tu mensaje.\n"
+    "7. IDENTIDAD DE MARCA: Incluye siempre el emoji de rayo ⚡ en tus respuestas (en el saludo o en la recomendación) "
+    "como sello distintivo de Volt."
 )
 
 
