@@ -1,21 +1,23 @@
 {% extends 'store/base.html' %}
-{% block title %}Ingresar · Volt{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Ingresar · Volt" %}{% endblock %}
 {% block body_class %}auth-page{% endblock %}
 {% block body %}
 <main class="auth-card">
+      {% include 'store/_language.html' %}
   <a class="brand" href="/">V<span>OLT</span></a>
-  <h1>Bienvenido de nuevo</h1>
-  <p class="muted">Ingresa para ver tu carrito y finalizar tus compras.</p>
+  <h1>{% translate "Bienvenido de nuevo" %}</h1>
+  <p class="muted">{% translate "Ingresa para ver tu carrito y finalizar tus compras." %}</p>
   <form method="post" novalidate>
     {% csrf_token %}
-    {% if form.errors %}<div class="alert">Usuario o contraseña incorrectos.</div>{% endif %}
-    <label for="id_username">Usuario</label>
+    {% if form.errors %}<div class="alert">{% translate "Usuario o contraseña incorrectos." %}</div>{% endif %}
+    <label for="id_username">{% translate "Usuario" %}</label>
     <input id="id_username" name="username" type="text" autocomplete="username" required autofocus>
-    <label for="id_password">Contraseña</label>
+    <label for="id_password">{% translate "Contraseña" %}</label>
     <input id="id_password" name="password" type="password" autocomplete="current-password" required>
     <input type="hidden" name="next" value="{{ next|default:'/' }}">
-    <button class="btn btn-primary btn-block" type="submit">Ingresar</button>
+    <button class="btn btn-primary btn-block" type="submit">{% translate "Ingresar" %}</button>
   </form>
-  <p class="muted small">¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate</a> · <a href="/">Volver a la tienda</a></p>
+  <p class="muted small">{% translate "¿No tienes cuenta?" %} <a href="{% url 'register' %}">{% translate "Regístrate" %}</a> · <a href="/">{% translate "Volver a la tienda" %}</a></p>
 </main>
 {% endblock %}

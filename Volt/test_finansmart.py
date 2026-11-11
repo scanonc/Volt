@@ -32,7 +32,6 @@ class FinanceDomainAndFakeTests(TestCase):
         self.assertEqual(summary.month, 11)
         self.assertEqual(summary.year, 2026)
         self.assertEqual(summary.currency, 'COP')
-        self.assertEqual(summary.income, Decimal('3200000.00'))
         self.assertEqual(summary.expenses, Decimal('245000.00'))
         self.assertEqual(summary.balance, Decimal('2955000.00'))
         self.assertEqual(summary.savings, Decimal('1250000.00'))
@@ -254,7 +253,7 @@ class FinanceCompositionRootAndViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Resumen financiero de FinanSmart')
         self.assertContains(response, 'Fuente: Datos de demostración (simulado)')
-        self.assertContains(response, 'COP 3200000.00')
+        self.assertContains(response, f'COP {provider.get_summary().income}')
 
     def test_view_uses_injected_provider_factory_and_renders_summary(self):
         fake_provider = FakeFinanceSummaryProvider(

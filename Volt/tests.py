@@ -178,7 +178,7 @@ class CreateOrderApiTests(TestCase):
         self.url = '/api/orders/'
 
     def test_get_orders_endpoint_returns_instructions(self):
-        response = self.client.get(self.url)
+        response = self.client.get(self.url, HTTP_ACCEPT_LANGUAGE='en')
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Use POST', response.json()['message'])

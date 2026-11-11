@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,13 +29,13 @@ from ..services import (
 class CreateOrderView(APIView):
     def get(self, request, *args, **kwargs):
         return Response({
-            'message': 'Use POST to create an order. Send an authenticated request with the cart populated.',
+            'message': _('Use POST to create an order. Send an authenticated request with the cart populated.'),
             'endpoint': '/api/orders/',
         }, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         input_serializer = CreateOrderInputSerializer(data=request.data)
         if not input_serializer.is_valid():
@@ -61,7 +62,7 @@ class CreateOrderView(APIView):
         output_serializer = OrderSerializer(order)
 
         return Response({
-            'message': 'Order created successfully.',
+            'message': _('Order created successfully.'),
             'order': output_serializer.data,
         }, status=status.HTTP_201_CREATED)
 
@@ -69,7 +70,7 @@ class CreateOrderView(APIView):
 class AddressListView(APIView):
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         addresses = Address.objects.filter(user=request.user)
         serializer = AddressSerializer(addresses, many=True)
@@ -77,7 +78,7 @@ class AddressListView(APIView):
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         serializer = AddressSerializer(data=request.data)
         if not serializer.is_valid():
@@ -90,11 +91,11 @@ class AddressListView(APIView):
 class AddressDetailView(APIView):
     def get(self, request, pk, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         address = Address.objects.filter(pk=pk, user=request.user).first()
         if address is None:
-            return Response({'error': 'Address not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Address not found.')}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = AddressSerializer(address)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -103,7 +104,7 @@ class AddressDetailView(APIView):
 class CartView(APIView):
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         cart = CartService().get_cart(request.user)
         serializer = CartSerializer(cart)
@@ -113,7 +114,7 @@ class CartView(APIView):
 class CartItemListView(APIView):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         input_serializer = AddCartItemInputSerializer(data=request.data)
         if not input_serializer.is_valid():
@@ -137,7 +138,7 @@ class CartItemListView(APIView):
 class CartItemDetailView(APIView):
     def delete(self, request, pk, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': _('Authentication required.')}, status=status.HTTP_401_UNAUTHORIZED)
 
         try:
             CartService().remove_item(request.user, pk)
@@ -185,7 +186,7 @@ class ProductDetailView(APIView):
     def get(self, request, pk, *args, **kwargs):
         product = Product.objects.select_related('category').filter(pk=pk).first()
         if product is None:
-            return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': _('Product not found.')}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)

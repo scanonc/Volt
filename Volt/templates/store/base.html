@@ -1,10 +1,12 @@
-{% load static %}<!doctype html>
-<html lang="es">
+{% load static i18n %}<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Volt · Moda{% endblock %}</title>
+  <title>{% block title %}{% translate "Volt · Moda" %}{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'volt/store.css' %}">
+  <script src="{% url 'javascript-catalog' %}"></script>
   {% block head %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">

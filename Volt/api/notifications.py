@@ -3,6 +3,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from django.conf import settings
+from django.utils.translation import gettext as _
 from django.http import JsonResponse
 
 
@@ -17,12 +18,12 @@ def notification_health(request):
 
 def send_notification(request):
     if request.method != 'POST':
-        return JsonResponse({'error': 'Method not allowed.'}, status=405)
+        return JsonResponse({'error': _('Method not allowed.')}, status=405)
 
     try:
         payload = json.loads(request.body)
     except (TypeError, ValueError):
-        return JsonResponse({'error': {'message': 'JSON inválido.'}}, status=400)
+        return JsonResponse({'error': {'message': _('JSON inválido.')}}, status=400)
 
     try:
         api_request = Request(
@@ -31,6 +32,7 @@ def send_notification(request):
             method='POST',
             headers={
                 'Content-Type': 'application/json',
+                'Accept-Language': request.LANGUAGE_CODE,
                 'X-API-Key': settings.NOTIFICATIONS_API_KEY,
             },
         )
@@ -40,10 +42,10 @@ def send_notification(request):
         try:
             error = json.loads(exc.read())
         except (TypeError, ValueError):
-            error = {'error': {'message': 'El servicio rechazó la solicitud.'}}
+            error = {'error': {'message': _('El servicio rechazó la solicitud.')}}
         return JsonResponse(error, status=exc.code)
     except (URLError, OSError, ValueError):
         return JsonResponse(
-            {'error': {'message': 'El servicio de notificaciones no está disponible.'}},
+            {'error': {'message': _('El servicio de notificaciones no está disponible.')}},
             status=503,
         )

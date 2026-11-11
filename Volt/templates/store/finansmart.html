@@ -1,14 +1,15 @@
 {% extends 'store/base.html' %}
-{% load static %}
+{% load static i18n l10n %}
 {% block title %}Volt · Resumen financiero de FinanSmart{% endblock %}
 {% block body %}
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="{% url 'store' %}">V<span>OLT</span></a>
     <nav class="nav">
-      <a href="{% url 'store' %}">← Volver a la tienda</a>
+      {% include 'store/_language.html' %}
+      <a href="{% url 'store' %}">← {% translate "Catálogo" %}</a>
       <a href="{% url 'finansmart' %}"><strong>FinanSmart</strong></a>
-      <a href="{% url 'dashboard' %}">Notificaciones</a>
+      <a href="{% url 'dashboard' %}">{% translate "Notificaciones" %}</a>
       {% if user.is_authenticated %}
         <span class="user-chip" title="Sesión iniciada">{{ user.username }}</span>
         <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="link-btn" type="submit">Salir</button></form>
@@ -37,6 +38,7 @@
           <span>Periodo: <strong>{{ finance_summary.month }}/{{ finance_summary.year }}</strong></span>
           <span>Moneda: <strong>{{ finance_summary.currency }}</strong></span>
         </div>
+        {% localize off %}
         <div class="finance-grid">
           <div class="finance-card">
             <span class="finance-label">Ingresos</span>
@@ -59,6 +61,7 @@
             <strong class="finance-value">{{ finance_summary.currency }} {{ finance_summary.debt }}</strong>
           </div>
         </div>
+        {% endlocalize %}
       {% else %}
         <p class="finance-unavailable" role="status">Resumen financiero no disponible</p>
       {% endif %}

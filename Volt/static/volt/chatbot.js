@@ -4,20 +4,21 @@
   if (!root) return;
 
   const ENDPOINT = root.dataset.endpoint || '/api/chatbot/message/';
-  const K_CONV = 'volt_chat_conversation_id';
-  const K_HIST = 'volt_chat_history';
+  const language = document.documentElement.lang;
+  const K_CONV = 'volt_chat_conversation_id_' + language;
+  const K_HIST = 'volt_chat_history_' + language;
   const K_OPEN = 'volt_chat_open';
   const TIMEOUT_MS = 35000;
   const MAX_LEN = 1000;
   const MAX_TA_HEIGHT = 132;
   const MAX_HISTORY = 40;
-  const GREETING = '¡Hola! ⚡ Soy el asesor virtual de Volt. Cuéntame qué buscas: prenda, color, talla, estilo o presupuesto.';
+  const GREETING = gettext("¡Hola! ⚡ Soy el asesor virtual de Volt. Cuéntame qué buscas: prenda, color, talla, estilo o presupuesto.");
   const SUGGESTIONS = [
-    'Camisetas casuales',
-    'Algo elegante para una cita',
-    'Jeans para hombre',
-    'Ropa deportiva',
-    'Un regalo para ella',
+    gettext("Camisetas casuales"),
+    gettext("Algo elegante para una cita"),
+    gettext("Jeans para hombre"),
+    gettext("Ropa deportiva"),
+    gettext("Un regalo para ella"),
   ];
 
   const toggle = document.getElementById('vc-toggle');
@@ -60,7 +61,7 @@
   function money(v) {
     const n = Number(v);
     if (isNaN(n)) return '';
-    return '$' + n.toLocaleString('es-CO', { maximumFractionDigits: 0 }) + ' COP';
+    return '$' + n.toLocaleString(document.documentElement.lang, { maximumFractionDigits: 0 }) + ' COP';
   }
 
   function scrollBottom() { list.scrollTop = list.scrollHeight; }
@@ -96,7 +97,7 @@
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'vc-retry';
-      b.textContent = 'Reintentar';
+      b.textContent = gettext("Reintentar");
       b.addEventListener('click', () => {
         if (busy) return;
         d.remove();
@@ -115,7 +116,7 @@
       t.id = 'vc-typing';
       t.className = 'vc-msg bot vc-typing';
       t.setAttribute('role', 'status');
-      t.setAttribute('aria-label', 'El asesor está escribiendo');
+      t.setAttribute('aria-label', gettext("El asesor está escribiendo"));
       t.innerHTML = '<i></i><i></i><i></i>';
       list.appendChild(t);
       scrollBottom();
@@ -169,7 +170,7 @@
       if (soldOut || low) {
         const badge = document.createElement('span');
         badge.className = 'vc-badge' + (low ? ' low' : '');
-        badge.textContent = soldOut ? 'Agotado' : 'Últimas ' + stock;
+        badge.textContent = soldOut ? gettext("Agotado") : interpolate(gettext("Últimas %(count)s"), { count: stock }, true);
         price.appendChild(badge);
       }
 
@@ -189,7 +190,7 @@
       const link = document.createElement('button');
       link.type = 'button';
       link.className = 'vc-link';
-      link.textContent = 'Ver producto';
+      link.textContent = gettext("Ver producto");
       link.addEventListener('click', () => openProduct(p.id));
       info.appendChild(link);
 
@@ -256,12 +257,12 @@
 
   /* ---------- Errores amigables ---------- */
   function friendlyError(status) {
-    if (status === 400) return 'No pude entender tu mensaje. Intenta escribirlo de otra forma (máximo ' + MAX_LEN + ' caracteres).';
-    if (status === 404) return 'Reiniciamos la conversación. Por favor, envía tu mensaje de nuevo.';
-    if (status === 502 || status === 503) return 'El asesor no está disponible en este momento. Inténtalo de nuevo en unos minutos.';
-    if (status === 'timeout') return 'La respuesta está tardando más de lo normal. Inténtalo de nuevo.';
-    if (status === 'offline') return 'Parece que no tienes conexión a internet. Revísala e inténtalo de nuevo.';
-    return 'Ocurrió un problema al contactar al asesor. Inténtalo de nuevo.';
+    if (status === 400) return interpolate(gettext("No pude entender tu mensaje. Intenta escribirlo de otra forma (máximo %(count)s caracteres)."), { count: MAX_LEN }, true);
+    if (status === 404) return gettext("Reiniciamos la conversación. Por favor, envía tu mensaje de nuevo.");
+    if (status === 502 || status === 503) return gettext("El asesor no está disponible en este momento. Inténtalo de nuevo en unos minutos.");
+    if (status === 'timeout') return gettext("La respuesta está tardando más de lo normal. Inténtalo de nuevo.");
+    if (status === 'offline') return gettext("Parece que no tienes conexión a internet. Revísala e inténtalo de nuevo.");
+    return gettext("Ocurrió un problema al contactar al asesor. Inténtalo de nuevo.");
   }
 
   /* ---------- Envío ---------- */
@@ -298,7 +299,7 @@
 
       const res = await fetch(ENDPOINT, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept-Language': language },
         body: JSON.stringify(body),
         signal: ctrl.signal,
       });
@@ -314,7 +315,7 @@
         return;
       }
       if (data.conversation_id) ss.set(K_CONV, data.conversation_id);
-      const botEl = addMsg(data.reply || 'No tengo una respuesta en este momento.', 'bot');
+      const botEl = addMsg(data.reply || gettext("No tengo una respuesta en este momento."), 'bot');
       addProducts(data.products);
       scrollToReplyStart(botEl);
     } catch (err) {
@@ -360,7 +361,7 @@
   function setOpen(open) {
     panel.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Cerrar asesor virtual' : 'Abrir asesor virtual');
+    toggle.setAttribute('aria-label', open ? gettext("Cerrar asesor virtual") : gettext("Abrir asesor virtual"));
     ss.set(K_OPEN, open ? '1' : '0');
     if (open) {
       scrollBottom();

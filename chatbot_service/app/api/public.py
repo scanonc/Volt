@@ -1,7 +1,10 @@
+from functools import partial
+
 from flask import Blueprint, current_app, jsonify, request
 
 from app.db.repositories import ConversationRepository, ProductRepository
 from app.providers.base import ProviderError
+from app.i18n import translate
 from app.providers.gemini import GeminiEmbeddingAdapter, GeminiTextAdapter
 from app.services.catalog_client import CatalogClient, CatalogClientError
 from app.services.chat import ChatService, ConversationNotFoundError
@@ -63,18 +66,20 @@ def health():
 
 @public_bp.post('/message/', strict_slashes=False)
 def message():
+    language = request.accept_languages.best_match(['es', 'en'])
+    _ = partial(translate, language=language)
     """Endpoint público síncrono para enviar un mensaje al asesor virtual de Volt."""
     if not request.is_json:
         return jsonify(error={
             'code': 'invalid_json',
-            'message': 'El cuerpo de la petición debe ser un objeto JSON válido.',
+            'message': _('El cuerpo de la petición debe ser un objeto JSON válido.'),
         }), 400
 
     data = request.get_json(silent=True)
     if not isinstance(data, dict):
         return jsonify(error={
             'code': 'invalid_json',
-            'message': 'Se requiere un objeto JSON.',
+            'message': _('Se requiere un objeto JSON.'),
         }), 400
 
     raw_message = data.get('message')
@@ -82,13 +87,13 @@ def message():
     if not isinstance(raw_message, str) or not raw_message.strip():
         return jsonify(error={
             'code': 'invalid_payload',
-            'message': 'El campo "message" es obligatorio y debe ser un texto no vacío.',
+            'message': _('El campo "message" es obligatorio y debe ser un texto no vacío.'),
         }), 400
 
     if len(raw_message.strip()) > max_len:
         return jsonify(error={
             'code': 'invalid_payload',
-            'message': f'El mensaje supera la longitud máxima permitida ({max_len} caracteres).',
+            'message': _('El mensaje supera la longitud máxima permitida (%(limit)s caracteres).') % {'limit': max_len},
         }), 400
 
     # Soportar conversation_id (o alias session_id) opcional
@@ -100,28 +105,30 @@ def message():
         if not isinstance(conv_id, str) or not conv_id.strip() or len(conv_id.strip()) > 128:
             return jsonify(error={
                 'code': 'invalid_payload',
-                'message': 'El campo "conversation_id" debe ser una cadena válida de hasta 128 caracteres.',
+                'message': _('El campo "conversation_id" debe ser una cadena válida de hasta 128 caracteres.'),
             }), 400
         conv_id = conv_id.strip()
 
     try:
         chat_service = _get_chat_service()
-        result = chat_service.handle_message(message=raw_message, conversation_id=conv_id)
+        result = chat_service.handle_message(
+            message=raw_message, conversation_id=conv_id, language=language,
+        )
         return jsonify(result), 200
     except ConversationNotFoundError:
         return jsonify(error={
             'code': 'conversation_not_found',
-            'message': 'La conversación indicada no existe.',
+            'message': _('La conversación indicada no existe.'),
         }), 404
     except (ProviderError, InvalidEmbeddingError) as exc:
         current_app.logger.error("Error del proveedor de IA al procesar mensaje: %s", exc)
         return jsonify(error={
             'code': 'llm_unavailable',
-            'message': 'El asistente virtual no está disponible temporalmente. Intenta de nuevo en unos momentos.',
+            'message': _('El asistente virtual no está disponible temporalmente. Intenta de nuevo en unos momentos.'),
         }), 503
     except CatalogClientError as exc:
         current_app.logger.error("Error al consultar el catálogo de Django: %s", exc)
         return jsonify(error={
             'code': 'catalog_unavailable',
-            'message': 'No fue posible consultar el catálogo de productos en este momento.',
+            'message': _('No fue posible consultar el catálogo de productos en este momento.'),
         }), 502

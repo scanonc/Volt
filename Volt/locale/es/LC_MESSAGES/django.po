@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Language: es\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Address not found."
+msgstr "No se encontró la dirección."
+
+msgid "Address with id %(id)s not found."
+msgstr "No se encontró la dirección con ID %(id)s."
+
+msgid "Authentication required."
+msgstr "Debes iniciar sesión."
+
+msgid "Cart is empty."
+msgstr "El carrito está vacío."
+
+msgid "Cart item with id %(id)s not found."
+msgstr "No se encontró el artículo del carrito con ID %(id)s."
+
+msgid "Insufficient stock for product \"%(product)s\". Requested: %(requested)s, available: %(available)s."
+msgstr "Stock insuficiente para «%(product)s». Solicitado: %(requested)s. Disponible: %(available)s."
+
+msgid "Method not allowed."
+msgstr "Método no permitido."
+
+msgid "Order created successfully."
+msgstr "Pedido creado correctamente."
+
+msgid "Product not found."
+msgstr "No se encontró el producto."
+
+msgid "Product with id %(id)s not found."
+msgstr "No se encontró el producto con ID %(id)s."
+
+msgid "Shipping address does not belong to the user."
+msgstr "La dirección de envío no pertenece al usuario."
+
+msgid "Use POST to create an order. Send an authenticated request with the cart populated."
+msgstr "Usa POST para crear un pedido. Inicia sesión y agrega productos al carrito antes de enviar la solicitud."
+
+msgid "User does not have a cart."
+msgstr "El usuario no tiene carrito."

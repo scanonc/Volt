@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Aquí tienes las prendas del catálogo que mejor se ajustan a tu búsqueda."
+msgstr "Here are the items from the catalog that best match your search."
+
+msgid "El asistente virtual no está disponible temporalmente. Intenta de nuevo en unos momentos."
+msgstr "The virtual assistant is temporarily unavailable. Try again shortly."
+
+msgid "El campo \"conversation_id\" debe ser una cadena válida de hasta 128 caracteres."
+msgstr "The \"conversation_id\" field must be a valid string of up to 128 characters."
+
+msgid "El campo \"message\" es obligatorio y debe ser un texto no vacío."
+msgstr "The \"message\" field is required and must be non-empty text."
+
+msgid "El cuerpo de la petición debe ser un objeto JSON válido."
+msgstr "The request body must be a valid JSON object."
+
+msgid "El mensaje supera la longitud máxima permitida (%(limit)s caracteres)."
+msgstr "The message exceeds the maximum length (%(limit)s characters)."
+
+msgid "La conversación indicada no existe."
+msgstr "The requested conversation does not exist."
+
+msgid "No encontré prendas disponibles en el catálogo que coincidan con tu búsqueda. ¿Podrías darme más detalles o ajustar tus filtros?"
+msgstr "I couldn't find any available items matching your search. Could you give me more details or adjust your filters?"
+
+msgid "No fue posible consultar el catálogo de productos en este momento."
+msgstr "Could not load the product catalog right now."
+
+msgid "Se requiere un objeto JSON."
+msgstr "A JSON object is required."
