@@ -254,3 +254,51 @@ msgstr "The service rejected the request."
 
 msgid "JSON inválido."
 msgstr "Invalid JSON."
+
+msgid "Volt · Resumen financiero de FinanSmart"
+msgstr "Volt · FinanSmart financial summary"
+
+msgid "Resumen financiero de FinanSmart"
+msgstr "FinanSmart financial summary"
+
+msgid "SERVICIO ALIADO · INTEGRACIÓN ADAPTER"
+msgstr "PARTNER SERVICE · ADAPTER INTEGRATION"
+
+msgid "Vista informativa de tu estado financiero general (no constituye un presupuesto exclusivo para ropa)."
+msgstr "An overview of your overall finances, including income, expenses, savings and debt."
+
+msgid "Fuente:"
+msgstr "Source:"
+
+msgid "Periodo:"
+msgstr "Period:"
+
+msgid "Moneda:"
+msgstr "Currency:"
+
+msgid "Ingresos"
+msgstr "Income"
+
+msgid "Gastos"
+msgstr "Expenses"
+
+msgid "Balance"
+msgstr "Balance"
+
+msgid "Ahorros"
+msgstr "Savings"
+
+msgid "Deuda"
+msgstr "Debt"
+
+msgid "Resumen financiero no disponible"
+msgstr "Financial summary unavailable"
+
+msgid "Ir al catálogo de la tienda →"
+msgstr "Browse the store catalog →"
+
+msgid "Integración aliada FinanSmart · Arquitectura de Software 2026"
+msgstr "FinanSmart partner integration · Software Architecture 2026"
+
+msgid "Datos de demostración (simulado)"
+msgstr "Simulated demo data"

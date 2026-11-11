@@ -156,6 +156,8 @@ Es una interfaz responsive que consume la API REST existente:
 Para ver datos de ejemplo: `python manage.py cargar_demo` (usuario `volt_demo`,
 contraseña `VoltDemo2026!`).
 
+Consulta el [diagrama de despliegue en AWS](wiki/Arquitectura-de-despliegue.md) y la [auditoría de UI/UX](wiki/Auditoria-UI-UX.md).
+
 ## Estructura del proyecto
 
 ```text

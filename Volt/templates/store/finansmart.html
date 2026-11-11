@@ -1,6 +1,6 @@
 {% extends 'store/base.html' %}
 {% load static i18n l10n %}
-{% block title %}Volt · Resumen financiero de FinanSmart{% endblock %}
+{% block title %}{% translate "Volt · Resumen financiero de FinanSmart" %}{% endblock %}
 {% block body %}
 <header class="site-header">
   <div class="wrap header-inner">
@@ -11,11 +11,11 @@
       <a href="{% url 'finansmart' %}"><strong>FinanSmart</strong></a>
       <a href="{% url 'dashboard' %}">{% translate "Notificaciones" %}</a>
       {% if user.is_authenticated %}
-        <span class="user-chip" title="Sesión iniciada">{{ user.username }}</span>
-        <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="link-btn" type="submit">Salir</button></form>
+        <span class="user-chip" title="{% translate "Sesión iniciada" %}">{{ user.username }}</span>
+        <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="link-btn" type="submit">{% translate "Salir" %}</button></form>
       {% else %}
-        <a href="{% url 'login' %}">Ingresar</a>
-        <a class="btn btn-small" href="{% url 'register' %}">Registrarme</a>
+        <a href="{% url 'login' %}">{% translate "Ingresar" %}</a>
+        <a class="btn btn-small" href="{% url 'register' %}">{% translate "Registrarme" %}</a>
       {% endif %}
     </nav>
   </div>
@@ -26,52 +26,52 @@
     <div class="finance-panel">
       <div class="finance-head">
         <div>
-          <p class="eyebrow">SERVICIO ALIADO · INTEGRACIÓN ADAPTER</p>
-          <h1 id="finance-heading">Resumen financiero de FinanSmart</h1>
-          <p class="finance-note">Vista informativa de tu estado financiero general (no constituye un presupuesto exclusivo para ropa).</p>
+          <p class="eyebrow">{% translate "SERVICIO ALIADO · INTEGRACIÓN ADAPTER" %}</p>
+          <h1 id="finance-heading">{% translate "Resumen financiero de FinanSmart" %}</h1>
+          <p class="finance-note">{% translate "Vista informativa de tu estado financiero general (no constituye un presupuesto exclusivo para ropa)." %}</p>
         </div>
-        <span class="finance-source">Fuente: {% if finance_summary %}{{ finance_summary.source }}{% else %}FinanSmart{% endif %}</span>
+        <span class="finance-source">{% translate "Fuente:" %} {% if finance_summary %}{{ finance_summary.source }}{% else %}FinanSmart{% endif %}</span>
       </div>
 
       {% if finance_summary %}
         <div class="finance-meta">
-          <span>Periodo: <strong>{{ finance_summary.month }}/{{ finance_summary.year }}</strong></span>
-          <span>Moneda: <strong>{{ finance_summary.currency }}</strong></span>
+          <span>{% translate "Periodo:" %} <strong>{{ finance_summary.month }}/{{ finance_summary.year }}</strong></span>
+          <span>{% translate "Moneda:" %} <strong>{{ finance_summary.currency }}</strong></span>
         </div>
         {% localize off %}
         <div class="finance-grid">
           <div class="finance-card">
-            <span class="finance-label">Ingresos</span>
+            <span class="finance-label">{% translate "Ingresos" %}</span>
             <strong class="finance-value">{{ finance_summary.currency }} {{ finance_summary.income }}</strong>
           </div>
           <div class="finance-card">
-            <span class="finance-label">Gastos</span>
+            <span class="finance-label">{% translate "Gastos" %}</span>
             <strong class="finance-value">{{ finance_summary.currency }} {{ finance_summary.expenses }}</strong>
           </div>
           <div class="finance-card">
-            <span class="finance-label">Balance</span>
+            <span class="finance-label">{% translate "Balance" %}</span>
             <strong class="finance-value {% if finance_summary.balance < 0 %}negative{% else %}positive{% endif %}">{{ finance_summary.currency }} {{ finance_summary.balance }}</strong>
           </div>
           <div class="finance-card">
-            <span class="finance-label">Ahorros</span>
+            <span class="finance-label">{% translate "Ahorros" %}</span>
             <strong class="finance-value">{{ finance_summary.currency }} {{ finance_summary.savings }}</strong>
           </div>
           <div class="finance-card">
-            <span class="finance-label">Deuda</span>
+            <span class="finance-label">{% translate "Deuda" %}</span>
             <strong class="finance-value">{{ finance_summary.currency }} {{ finance_summary.debt }}</strong>
           </div>
         </div>
         {% endlocalize %}
       {% else %}
-        <p class="finance-unavailable" role="status">Resumen financiero no disponible</p>
+        <p class="finance-unavailable" role="status">{% translate "Resumen financiero no disponible" %}</p>
       {% endif %}
 
       <div class="finance-actions">
-        <a class="btn btn-primary" href="{% url 'store' %}">Ir al catálogo de la tienda →</a>
+        <a class="btn btn-primary" href="{% url 'store' %}">{% translate "Ir al catálogo de la tienda →" %}</a>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="site-footer"><div class="wrap"><span>VOLT COMMERCE</span><span>Integración aliada FinanSmart · Arquitectura de Software 2026</span></div></footer>
+<footer class="site-footer"><div class="wrap"><span>VOLT COMMERCE</span><span>{% translate "Integración aliada FinanSmart · Arquitectura de Software 2026" %}</span></div></footer>
 {% endblock %}

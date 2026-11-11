@@ -1,6 +1,8 @@
 from decimal import Decimal
 from typing import Optional
 
+from django.utils.translation import gettext_lazy as _
+
 from Volt.domain.finance import FinanceSummary, FinanceSummaryProvider
 
 
@@ -25,7 +27,7 @@ class FakeFinanceSummaryProvider(FinanceSummaryProvider):
                 balance=Decimal('2955000.00'),
                 savings=Decimal('1250000.00'),
                 debt=Decimal('1800000.00'),
-                source='Datos de demostración (simulado)',
+                source=_('Datos de demostración (simulado)'),
             )
         )
 

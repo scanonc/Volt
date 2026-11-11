@@ -148,7 +148,12 @@ select{padding:9px 14px;border:1px solid var(--line);border-radius:999px;backgro
 
 @media(max-width:760px){
   .header-inner{flex-wrap:wrap;height:auto;padding:12px 28px;gap:10px}.search{order:3;max-width:none;flex-basis:100%}
-  .nav a:not(.btn){display:none}
+  .nav {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    margin-left: 0;
+  }
   .hero-inner{grid-template-columns:1fr}.hero-art{display:none}
   .modal{grid-template-columns:1fr}.modal .thumb{min-height:200px;height:200px}
 }
