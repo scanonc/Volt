@@ -145,6 +145,12 @@ CHATBOT_SYNC_URL = os.environ.get('CHATBOT_SYNC_URL', '')
 CHATBOT_INTERNAL_API_KEY = os.environ.get('CHATBOT_INTERNAL_API_KEY', '')
 CHATBOT_SYNC_TIMEOUT = float(os.environ.get('CHATBOT_SYNC_TIMEOUT', '2.0'))
 
+# Servicio aliado FinanSmart
+FINANSMART_BACKEND = os.environ.get('FINANSMART_BACKEND', '')
+FINANSMART_SUMMARY_URL = os.environ.get('FINANSMART_SUMMARY_URL', '')
+FINANSMART_TOKEN = os.environ.get('FINANSMART_TOKEN', '')
+FINANSMART_TIMEOUT = float(os.environ.get('FINANSMART_TIMEOUT', '5'))
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 LOGIN_URL = '/login/'

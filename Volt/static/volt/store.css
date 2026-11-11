@@ -45,6 +45,24 @@ a{color:inherit}
 .b2{width:130px;height:130px;background:var(--orange);left:30px;bottom:10px;mix-blend-mode:multiply}
 .bolt{position:absolute;inset:0;display:grid;place-items:center;font-size:110px;filter:drop-shadow(0 8px 12px rgba(0,0,0,.15))}
 
+/* Finance Summary (FinanSmart) */
+.finance-section{margin:10px auto 34px}
+.finance-page-section{margin:54px auto 80px;min-height:60vh}
+.finance-panel{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:32px 30px;box-shadow:var(--shadow)}
+.finance-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.finance-head h1,.finance-head h2{margin:0 0 6px;font-size:clamp(26px,4vw,36px);letter-spacing:-.03em;line-height:1.1}
+.finance-note{margin:0;color:var(--muted);font-size:14px}
+.finance-source{font:500 11px 'DM Mono',monospace;letter-spacing:.08em;background:var(--paper);border:1px solid var(--line);padding:6px 12px;border-radius:999px;color:var(--ink)}
+.finance-meta{display:flex;gap:18px;flex-wrap:wrap;font:400 12px 'DM Mono',monospace;color:var(--muted);margin-bottom:16px}
+.finance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px}
+.finance-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.finance-label{font:500 11px 'DM Mono',monospace;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.finance-value{font-size:19px;font-weight:700;color:var(--ink)}
+.finance-value.negative{color:#b42318}
+.finance-value.positive{color:#166534}
+.finance-unavailable{margin:8px 0 0;padding:18px 20px;background:var(--paper);border:1px dashed var(--line);border-radius:12px;color:var(--muted);font-size:15px}
+.finance-actions{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+
 /* Catalog */
 .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin:30px 0 18px}
 .section-head h2{margin:0;font-size:32px;letter-spacing:-.03em}

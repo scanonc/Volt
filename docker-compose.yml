@@ -45,6 +45,9 @@ services:
       CHATBOT_SYNC_URL: ${CHATBOT_SYNC_URL:-http://chatbot:5001/internal/products/sync}
       CHATBOT_INTERNAL_API_KEY: ${CHATBOT_INTERNAL_API_KEY:?Configura .env}
       CHATBOT_SYNC_TIMEOUT: ${CHATBOT_SYNC_TIMEOUT:-2.0}
+      FINANSMART_BACKEND: ${FINANSMART_BACKEND:-}
+      FINANSMART_SUMMARY_URL: ${FINANSMART_SUMMARY_URL:-http://finansmart:8000/api/v1/summary/}
+      FINANSMART_TOKEN: ${FINANSMART_TOKEN:-}
     volumes:
       - static_data:/app/staticfiles
       - django_data:/app/data

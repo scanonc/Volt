@@ -17,10 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
-from Volt.views import notification_dashboard, register, store_home
+from Volt.infra.factory import create_finance_summary_provider
+from Volt.views import finansmart_summary, notification_dashboard, register, store_home
 
 urlpatterns = [
     path('', store_home, name='store'),
+    path(
+        'finansmart/',
+        finansmart_summary,
+        {'provider_factory': create_finance_summary_provider},
+        name='finansmart',
+    ),
     path('notificaciones/', notification_dashboard, name='dashboard'),
     path('login/', auth_views.LoginView.as_view(
         template_name='store/login.html', redirect_authenticated_user=True), name='login'),

@@ -8,6 +8,7 @@
     <div class="search"><input id="search" type="search" placeholder="Buscar prendas…" aria-label="Buscar prendas"></div>
     <nav class="nav">
       <a href="#catalogo">Catálogo</a>
+      <a href="{% url 'finansmart' %}">FinanSmart</a>
       <a href="{% url 'dashboard' %}">Notificaciones</a>
       {% if user.is_authenticated %}
         <span class="user-chip" title="Sesión iniciada">{{ user.username }}</span>

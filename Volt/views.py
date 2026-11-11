@@ -1,11 +1,32 @@
+from typing import Callable, Optional
+
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.middleware.csrf import get_token
 from django.shortcuts import redirect, render
 
+from .domain.finance import FinanceSummaryProvider
+from .infra.factory import create_finance_summary_provider
+
 
 def store_home(request):
     return render(request, 'store/index.html')
+
+
+def finansmart_summary(
+    request,
+    finance_provider: Optional[FinanceSummaryProvider] = None,
+    provider_factory: Callable[[], FinanceSummaryProvider] = create_finance_summary_provider,
+):
+    provider = finance_provider if finance_provider is not None else provider_factory()
+    finance_summary = provider.get_summary()
+    return render(
+        request,
+        'store/finansmart.html',
+        {
+            'finance_summary': finance_summary,
+        },
+    )
 
 
 def register(request):
