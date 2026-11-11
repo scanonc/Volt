@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Correo de confirmación enviado para pedido #%(order_id)s"
+msgstr "Confirmation email sent for order #%(order_id)s"
+
+msgid "Credenciales inválidas."
+msgstr "Invalid credentials."
+
+msgid "No se pudo procesar la notificación."
+msgstr "Could not process the notification."
+
+msgid "Pedido #%(order_id)s confirmado para %(username)s"
+msgstr "Order #%(order_id)s confirmed for %(username)s"
+
+msgid "Se requiere un objeto JSON."
+msgstr "A JSON object is required."
+
+msgid "Servicio sin configurar."
+msgstr "Service is not configured."
+
+msgid "order_id debe ser entero positivo, username texto de 1 a 150 caracteres y channel console o email."
+msgstr "order_id must be a positive integer, username must be 1 to 150 characters, and channel must be console or email."

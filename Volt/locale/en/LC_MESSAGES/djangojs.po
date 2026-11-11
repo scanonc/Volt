@@ -1,0 +1,220 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "%(count)s unidades disponibles"
+msgstr "%(count)s units available"
+
+msgid "+ Agregar dirección"
+msgstr "+ Add address"
+
+msgid "AGOTADO"
+msgstr "SOLD OUT"
+
+msgid "Abrir asesor virtual"
+msgstr "Open virtual assistant"
+
+msgid "Agotado"
+msgstr "Sold out"
+
+msgid "Agregado al carrito ✓"
+msgstr "Added to cart ✓"
+
+msgid "Agregar al carrito"
+msgstr "Add to cart"
+
+msgid "Algo elegante para una cita"
+msgstr "Something elegant for a date"
+
+msgid "Aún no tienes direcciones guardadas."
+msgstr "You have no saved addresses yet."
+
+msgid "Calle / carrera y número"
+msgstr "Street address and number"
+
+msgid "Camisetas casuales"
+msgstr "Casual T-shirts"
+
+msgid "Cerrar"
+msgstr "Close"
+
+msgid "Cerrar asesor virtual"
+msgstr "Close virtual assistant"
+
+msgid "Ciudad"
+msgstr "City"
+
+msgid "Comprobando..."
+msgstr "Checking..."
+
+msgid "Comprueba que el servidor esté ejecutándose."
+msgstr "Check that the server is running."
+
+msgid "Código postal"
+msgstr "Postal code"
+
+msgid "DIRECCIÓN DE ENVÍO"
+msgstr "SHIPPING ADDRESS"
+
+msgid "Debes iniciar sesión para continuar."
+msgstr "Sign in to continue."
+
+msgid "Departamento"
+msgstr "State or province"
+
+msgid "Dirección guardada ✓"
+msgstr "Address saved ✓"
+
+msgid "El asesor está escribiendo"
+msgstr "The assistant is typing"
+
+msgid "El asesor no está disponible en este momento. Inténtalo de nuevo en unos minutos."
+msgstr "The assistant is unavailable right now. Try again in a few minutes."
+
+msgid "El servicio devolvió un error de validación."
+msgstr "The service returned a validation error."
+
+msgid "Enviando solicitud..."
+msgstr "Sending request..."
+
+msgid "Error de conexión"
+msgstr "Connection error"
+
+msgid "Explorar catálogo"
+msgstr "Browse catalog"
+
+msgid "Finalizar compra"
+msgstr "Check out"
+
+msgid "Guardar dirección"
+msgstr "Save address"
+
+msgid "Inicia sesión para usar el carrito."
+msgstr "Sign in to use the cart."
+
+msgid "Jeans para hombre"
+msgstr "Men's jeans"
+
+msgid "La respuesta está tardando más de lo normal. Inténtalo de nuevo."
+msgstr "The reply is taking longer than usual. Try again."
+
+msgid "La solicitud fue rechazada"
+msgstr "The request was rejected"
+
+msgid "Menos"
+msgstr "Decrease quantity"
+
+msgid "Más"
+msgstr "Increase quantity"
+
+msgid "No disponible"
+msgstr "Unavailable"
+
+msgid "No fue posible contactar el proxy de Django."
+msgstr "Could not reach the Django proxy."
+
+msgid "No pude entender tu mensaje. Intenta escribirlo de otra forma (máximo %(count)s caracteres)."
+msgstr "I couldn't understand your message. Try rephrasing it (up to %(count)s characters)."
+
+msgid "No se pudo cargar el catálogo."
+msgstr "Could not load the catalog."
+
+msgid "No tengo una respuesta en este momento."
+msgstr "I don't have an answer right now."
+
+msgid "Notificación simulada"
+msgstr "Notification simulated"
+
+msgid "Nueva dirección"
+msgstr "New address"
+
+msgid "Ocurrió un error inesperado."
+msgstr "An unexpected error occurred."
+
+msgid "Ocurrió un problema al contactar al asesor. Inténtalo de nuevo."
+msgstr "There was a problem contacting the assistant. Try again."
+
+msgid "Operativo · Flask"
+msgstr "Operational · Flask"
+
+msgid "Parece que no tienes conexión a internet. Revísala e inténtalo de nuevo."
+msgstr "You appear to be offline. Check your connection and try again."
+
+msgid "País"
+msgstr "Country"
+
+msgid "Procesando…"
+msgstr "Processing…"
+
+msgid "QUEDAN %(count)s"
+msgstr "%(count)s LEFT"
+
+msgid "Quitar"
+msgstr "Remove"
+
+msgid "Reiniciamos la conversación. Por favor, envía tu mensaje de nuevo."
+msgstr "The conversation was reset. Please send your message again."
+
+msgid "Reintentar"
+msgstr "Try again"
+
+msgid "Respuesta recibida desde el microservicio Flask."
+msgstr "Response received from the Flask service."
+
+msgid "Revisa que el contenedor notifications esté levantado."
+msgstr "Check that the notifications container is running."
+
+msgid "Ropa deportiva"
+msgstr "Sportswear"
+
+msgid "Seguir comprando"
+msgstr "Continue shopping"
+
+msgid "Servicio no disponible"
+msgstr "Service unavailable"
+
+msgid "Sin conexión"
+msgstr "Offline"
+
+msgid "Sin descripción."
+msgstr "No description."
+
+msgid "Sin stock por ahora"
+msgstr "Currently out of stock"
+
+msgid "Te enviamos la confirmación de tu compra."
+msgstr "We sent your order confirmation."
+
+msgid "Todo"
+msgstr "All"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Total pagado:"
+msgstr "Total paid:"
+
+msgid "Tu carrito está vacío."
+msgstr "Your cart is empty."
+
+msgid "Un regalo para ella"
+msgstr "A gift for her"
+
+msgid "Usar como principal"
+msgstr "Set as default"
+
+msgid "Ver producto"
+msgstr "View product"
+
+msgid "Volver al carrito"
+msgstr "Back to cart"
+
+msgid "¡Hola! ⚡ Soy el asesor virtual de Volt. Cuéntame qué buscas: prenda, color, talla, estilo o presupuesto."
+msgstr "Hi! ⚡ I'm Volt's virtual assistant. Tell me what you're looking for: item, color, size, style or budget."
+
+msgid "¡Pedido #%(id)s confirmado!"
+msgstr "Order #%(id)s confirmed!"
+
+msgid "Últimas %(count)s"
+msgstr "Only %(count)s left"

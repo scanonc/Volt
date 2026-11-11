@@ -1,0 +1,256 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Abrir asesor virtual"
+msgstr "Open virtual assistant"
+
+msgid "Abrir carrito"
+msgstr "Open cart"
+
+msgid "Arquitectura · Strangler Pattern"
+msgstr "Architecture · Strangler Pattern"
+
+msgid "Asesor Volt"
+msgstr "Volt assistant"
+
+msgid "Asesor virtual Volt"
+msgstr "Volt virtual assistant"
+
+msgid "Bienvenido de nuevo"
+msgstr "Welcome back"
+
+msgid "Buscar prendas"
+msgstr "Search clothing"
+
+msgid "Buscar prendas…"
+msgstr "Search clothing…"
+
+msgid "CATÁLOGO"
+msgstr "CATALOG"
+
+msgid "CENTRO DE OPERACIONES"
+msgstr "OPERATIONS CENTER"
+
+msgid "Cambiar idioma"
+msgstr "Change language"
+
+msgid "Canal de entrega"
+msgstr "Delivery channel"
+
+msgid "Carrito de compras"
+msgstr "Shopping cart"
+
+msgid "Categorías"
+msgstr "Categories"
+
+msgid "Catálogo"
+msgstr "Catalog"
+
+msgid "Cerrar"
+msgstr "Close"
+
+msgid "Cerrar chat"
+msgstr "Close chat"
+
+msgid "Comprobando..."
+msgstr "Checking..."
+
+msgid "Comprobar estado"
+msgstr "Check status"
+
+msgid "Confirmación por correo"
+msgstr "Email confirmation"
+
+msgid "Console"
+msgstr "Console"
+
+msgid "Contraseña"
+msgstr "Password"
+
+msgid "Crea tu cuenta"
+msgstr "Create your account"
+
+msgid "Crear cuenta"
+msgstr "Create account"
+
+msgid "Crear cuenta · Volt"
+msgstr "Create an account · Volt"
+
+msgid "ESTADO DEL SERVICIO"
+msgstr "SERVICE STATUS"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "En línea · te ayudo a elegir"
+msgstr "Online · I can help you choose"
+
+msgid "Enviar confirmación"
+msgstr "Send confirmation"
+
+msgid "Enviar mensaje"
+msgstr "Send message"
+
+msgid "Enviar notificación"
+msgstr "Send notification"
+
+msgid "Escribe tu consulta…"
+msgstr "Type your question…"
+
+msgid "Esperando una solicitud"
+msgstr "Waiting for a request"
+
+msgid "Estado del servicio"
+msgstr "Service status"
+
+msgid "Guarda tu carrito, tus direcciones y tus pedidos."
+msgstr "Save your cart, addresses and orders."
+
+msgid "ID del pedido"
+msgstr "Order ID"
+
+msgid "Idioma"
+msgstr "Language"
+
+msgid "Ingresa"
+msgstr "Sign in"
+
+msgid "Ingresa para ver tu carrito y finalizar tus compras."
+msgstr "Sign in to view your cart and check out."
+
+msgid "Ingresar"
+msgstr "Sign in"
+
+msgid "Ingresar · Volt"
+msgstr "Sign in · Volt"
+
+msgid "La clave del servicio se mantiene en el backend de Django."
+msgstr "Django keeps the service key on the server."
+
+msgid "Mensaje"
+msgstr "Message"
+
+msgid "Moda con"
+msgstr "Fashion with"
+
+msgid "NUEVA COLECCIÓN"
+msgstr "NEW COLLECTION"
+
+msgid "No encontramos prendas con esos filtros."
+msgstr "No clothing matches these filters."
+
+msgid "Nombre A–Z"
+msgstr "Name A–Z"
+
+msgid "Nombre del comprador"
+msgstr "Buyer name"
+
+msgid "Notificaciones"
+msgstr "Notifications"
+
+msgid "Notificaciones que"
+msgstr "Notifications that"
+
+msgid "Nueva conversación"
+msgstr "New conversation"
+
+msgid "Ordenar"
+msgstr "Sort"
+
+msgid "Ordenar: destacados"
+msgstr "Sort: featured"
+
+msgid "Precio: mayor a menor"
+msgstr "Price: high to low"
+
+msgid "Precio: menor a mayor"
+msgstr "Price: low to high"
+
+msgid "Prendas esenciales para tu día a día. Elige, agrega al carrito y recibe tu pedido con confirmación inmediata."
+msgstr "Everyday essentials. Choose your items, add them to your cart and get an immediate order confirmation."
+
+msgid "Prueba el flujo de confirmación de pedidos y observa la respuesta del microservicio en tiempo real."
+msgstr "Try the order confirmation flow and see the service response in real time."
+
+msgid "RUTA ACTIVA"
+msgstr "ACTIVE ROUTE"
+
+msgid "Registrarme"
+msgstr "Sign up"
+
+msgid "Regístrate"
+msgstr "Sign up"
+
+msgid "SIMULADOR"
+msgstr "SIMULATOR"
+
+msgid "Salir"
+msgstr "Sign out"
+
+msgid "Selecciona un canal y envía una confirmación para ver el contrato JSON del servicio."
+msgstr "Select a channel and send a confirmation to see the JSON response."
+
+msgid "Sesión iniciada"
+msgstr "Signed in"
+
+msgid "Simulación en registro"
+msgstr "Simulated in the log"
+
+msgid "Solo disponibles"
+msgstr "In stock only"
+
+msgid "Tienda virtual de moda · Arquitectura de Software 2026"
+msgstr "Online fashion store · Software Architecture 2026"
+
+msgid "Todas las prendas"
+msgstr "All clothing"
+
+msgid "Tu carrito"
+msgstr "Your cart"
+
+msgid "Usuario"
+msgstr "Username"
+
+msgid "Usuario o contraseña incorrectos."
+msgstr "Incorrect username or password."
+
+msgid "Ver catálogo →"
+msgstr "View catalog →"
+
+msgid "Volt / Notificaciones"
+msgstr "Volt / Notifications"
+
+msgid "Volt · Moda"
+msgstr "Volt · Fashion"
+
+msgid "Volver a la tienda"
+msgstr "Back to the store"
+
+msgid "energía propia."
+msgstr "energy of its own."
+
+msgid "llegan a tiempo."
+msgstr "arrive on time."
+
+msgid "Servicio de notificaciones"
+msgstr "Notification service"
+
+msgid "¿No tienes cuenta?"
+msgstr "Don't have an account?"
+
+msgid "¿Ya tienes cuenta?"
+msgstr "Already have an account?"
+
+msgid "ÚLTIMA RESPUESTA"
+msgstr "LATEST RESPONSE"
+
+msgid "El servicio de notificaciones no está disponible."
+msgstr "The notifications service is unavailable."
+
+msgid "El servicio rechazó la solicitud."
+msgstr "The service rejected the request."
+
+msgid "JSON inválido."
+msgstr "Invalid JSON."

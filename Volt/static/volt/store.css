@@ -135,3 +135,15 @@ select{padding:9px 14px;border:1px solid var(--line);border-radius:999px;backgro
   .modal{grid-template-columns:1fr}.modal .thumb{min-height:200px;height:200px}
 }
 .modal[hidden],.overlay[hidden]{display:none}
+
+.language-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: .875rem;
+}
+.language-picker select, .language-picker button {
+  width: auto;
+  padding: .25rem .4rem;
+  font: inherit;
+}

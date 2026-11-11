@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
+from django.views.i18n import JavaScriptCatalog
 from Volt.views import notification_dashboard, register, store_home
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('jsi18n/', JavaScriptCatalog.as_view(packages=['Volt']), name='javascript-catalog'),
     path('', store_home, name='store'),
     path('notificaciones/', notification_dashboard, name='dashboard'),
     path('login/', auth_views.LoginView.as_view(

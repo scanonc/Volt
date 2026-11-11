@@ -3,6 +3,7 @@ import logging
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
+from app.i18n import translate
 from app.db.repositories import ConversationRepository
 from app.providers.base import TextGenerator
 from app.services.search import SearchService, sanitize_filters
@@ -181,6 +182,7 @@ class ChatService:
         self,
         message: str,
         conversation_id: Optional[str] = None,
+        language: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Procesa un turno de conversación: historial -> filtros -> búsqueda -> respuesta -> guardado."""
         clean_message = message.strip()
@@ -207,6 +209,8 @@ class ChatService:
 
         # Paso 3: Construir prompt solo con los productos recuperados y generar respuesta
         rag_prompt = self._build_rag_prompt(history, clean_message, search_result)
+        if language:
+            rag_prompt += f"\nIdioma de la respuesta (código ISO): {language}."
         reply = self.text_generator.generate(
             prompt=rag_prompt,
             system_instruction=ADVISOR_SYSTEM_PROMPT,
@@ -214,11 +218,13 @@ class ChatService:
 
         if not reply:
             if search_result.get('products'):
-                reply = "Aquí tienes las prendas del catálogo que mejor se ajustan a tu búsqueda."
+                reply = translate(
+                    "Aquí tienes las prendas del catálogo que mejor se ajustan a tu búsqueda.", language,
+                )
             else:
-                reply = (
+                reply = translate(
                     "No encontré prendas disponibles en el catálogo que coincidan con tu búsqueda. "
-                    "¿Podrías darme más detalles o ajustar tus filtros?"
+                    "¿Podrías darme más detalles o ajustar tus filtros?", language,
                 )
 
         # Paso 4: Guardar mensajes en la conversación
