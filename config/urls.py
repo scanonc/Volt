@@ -27,6 +27,6 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('registro/', register, name='register'),
     path('admin/', admin.site.urls),
-    path('api/v1/', include('Volt.urls', namespace='Volt_v1')),
-    path('api/', include('Volt.urls')),
+    path('api/v1/', include('Volt.api.urls', namespace='Volt_v1')),
+    path('api/', include('Volt.api.urls')),
 ]

@@ -49,7 +49,7 @@ django.setup()
 
 from django.core.management import call_command
 from Volt.models import Product, Category
-from Volt.serializers import ProductSerializer
+from Volt.api.serializers import ProductSerializer
 
 # Importar componentes del microservicio chatbot
 from app.config import Config

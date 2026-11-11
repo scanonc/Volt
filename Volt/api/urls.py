@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .api.views import (
+from .notifications import notification_health, send_notification
+from .views import (
     AddressDetailView,
     AddressListView,
     CartItemDetailView,
@@ -10,10 +11,6 @@ from .api.views import (
     CreateOrderView,
     ProductDetailView,
     ProductListView,
-)
-from .views import (
-    notification_health,
-    send_notification,
 )
 
 app_name = 'Volt'
