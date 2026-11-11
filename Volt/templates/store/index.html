@@ -9,6 +9,7 @@
     <nav class="nav">
       {% include 'store/_language.html' %}
       <a href="#catalogo">{% translate "Catálogo" %}</a>
+      <a href="{% url 'finansmart' %}">FinanSmart</a>
       <a href="{% url 'dashboard' %}">{% translate "Notificaciones" %}</a>
       {% if user.is_authenticated %}
         <span class="user-chip" title="{% translate "Sesión iniciada" %}">{{ user.username }}</span>
